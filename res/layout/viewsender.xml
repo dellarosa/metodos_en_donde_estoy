@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+        <TextView
+        android:id="@+id/TextViewNuevoUsuario2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ID: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    	<TextView
+        android:id="@+id/TextViewCode2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CODE: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+   		<ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.99"
+        android:src="@drawable/principal3" />
+   		
+    <Button
+        android:id="@+id/btEnviarURL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="ENVIAR URL" />
+    
+     <Button
+        android:id="@+id/btMinimizar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="Minimize" />
+    
+</LinearLayout>
