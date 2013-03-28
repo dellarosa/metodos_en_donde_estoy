@@ -1,4 +1,4 @@
-package entities;
+package entities.wk;
 
 import domain.Gps;
 import android.content.BroadcastReceiver;

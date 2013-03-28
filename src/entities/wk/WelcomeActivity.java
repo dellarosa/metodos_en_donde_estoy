@@ -1,6 +1,6 @@
-package entities;
+package entities.wk;
 
-import wlocation.wk.R;
+import entities.wk.R;
 import android.app.Activity;
 
 
@@ -74,7 +74,7 @@ public class WelcomeActivity extends Activity {
 					    
 					    try
 					    {
-					    	IntWelcome=new Intent(getApplicationContext(),HTService.class);
+					    	IntWelcome=new Intent(getApplicationContext(),ServiceControl.class);
 					    }catch(Exception Ex)
 					    {
 					    	Log.e(TAG,"[onCreate] Exception Welcome Intent: "+Ex);	

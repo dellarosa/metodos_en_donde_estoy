@@ -1,16 +1,19 @@
-package entities;
+package entities.wk;
 
+import java.util.ArrayList;
 import java.util.Random;
 
+import metodos.MetodosRequest;
 import metodos.RequestTask;
 
 import com.google.gson.Gson;
 
+import domain.Category;
 import domain.CategoryLocation;
 import domain.Definiciones;
 import domain.Gps;
 import domain.Definiciones.*;
-import entities.Files;
+import entities.wk.Files;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,7 +30,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
-import wlocation.wk.R;
+import entities.wk.R;
 
 public class HowToUse extends Activity {
 	
@@ -38,17 +41,21 @@ public class HowToUse extends Activity {
     private String strNameFileCode="cyscod.txt";
 	private Files objFiles = new Files();
 	
-	 private CheckBox checkBoxRastreo; 
-	 private CheckBox checkBoxNear;
+	  CheckBox checkBoxRastreo; 
+	  CheckBox checkBoxNear;
 	 RequestTask objT;
-     private EditText etxUser=(EditText) findViewById(R.id.EditTextUser);
-     private EditText etxPass=(EditText) findViewById(R.id.EditTextPass);     
-     private Button buttonstart;
+     private EditText etxUser;
+     private EditText etxPass;     
+      Button buttonstart;
      boolean TimerState;
-     boolean bologin=false;
+     
      
      /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public String getDeviceID() 
+	public HowToUse()
+	{
+		Log.i(TAG,"[HowToUse] CONSTRUCTOR");
+	}
+     public String getDeviceID() 
     {
     	  TelephonyManager TelephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
     	  String DEVICE_ID = TelephonyMgr.getDeviceId();
@@ -56,41 +63,48 @@ public class HowToUse extends Activity {
     }
 
 	
-	private OnCheckedChangeListener chlistener =new OnCheckedChangeListener() {			 
-		 public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
-			 if(isChecked){
-				 Log.i(TAG,"[onCreate] IS CHECKED");
-				 switch(buttonview.getId())
-				 {
-				     case R.id.checkBoxNearLocation:
-				    	 Log.i(TAG,"[onCreate] NEAR IS CHECKED");
-				    	 checkBoxNear.setChecked(true);
-				    	 checkBoxRastreo.setChecked(false);
-				          
-				          break;
-				     case R.id.checkBoxRastreo:
-				    	 Log.i(TAG,"[onCreate] RASTREO IS CHECKED");
-				          checkBoxRastreo.setChecked(true);
-				          checkBoxNear.setChecked(false);				          
-				          break;				        	 
-				 }
-			 }			  
-		 }};
-	public void onCreate(Bundle savedInstanceState) 
-	{	    
-		 super.onCreate(savedInstanceState);
-	
-	     setContentView(R.layout.howtouse);
-	 
 
+	public void onCreate(Bundle savedInstanceState) 
+	{	 
+		
+		 super.onCreate(savedInstanceState);
+		 Log.i(TAG,"[onCreate] DENTRO ONCREATE");
+	     setContentView(R.layout.howtouse);
+	     
+	    
+	     final MetodosRequest metrequest=new MetodosRequest();
+	     //TODO ACTUALIZAR CATEGORIAS DISPONIBLES
+	     
+	     ArrayList<Category> categorias=metrequest.actualizarCategoriasDisponibles();
+	     if(categorias!=null)
+	     {
+	    	 SharedPreferences.Editor editorcat;
+    		 SharedPreferences sharedcategorias = getSharedPreferences("categorias",MODE_PRIVATE);	;
+    		 
+	    	 for(Category categ:categorias)
+	    	 { 
+		    	 editorcat=sharedcategorias.edit();
+		    	 editorcat.putString(categ.getCategoryName(), categ.getCategoryName());
+	    	 }
+	     
+	     }
+	     
+	     
+	     
+	     
+	     
+	     ///////////////////////////////////////////////////////////////////////////////////////////////
+	     final EditText etxUser=(EditText) findViewById(R.id.EditTextUser);
+	     final EditText etxPass=(EditText) findViewById(R.id.EditTextPass);
+	     
+	     
 	     checkBoxRastreo = (CheckBox) findViewById(R.id.checkBoxRastreo);
 	     checkBoxNear = (CheckBox) findViewById(R.id.checkBoxNearLocation);
-		    
-			 
-			 checkBoxRastreo.setOnCheckedChangeListener(chlistener);
-			 checkBoxNear.setOnCheckedChangeListener(chlistener);
+		 	 
+		 checkBoxRastreo.setOnCheckedChangeListener(chlistener);
+		 checkBoxNear.setOnCheckedChangeListener(chlistener);
 	   	 		 
-	  
+		 Log.i(TAG,"[onCreate] PASE CHECKBOX");
 	    buttonstart = (Button) findViewById(R.id.buttonEmpezarAhora);
 	    buttonstart.setOnClickListener(new OnClickListener()
 	    {     
@@ -104,15 +118,16 @@ public class HowToUse extends Activity {
 			   		if(etxPass.getText().toString().length()==Definiciones.Definicionesgenerales.incantdigitosPass)
 				   	{
 			   			if((checkBoxRastreo.isChecked())||(checkBoxNear.isChecked()))
-				   		{
-				   			
-							SharedPreferences settings = getSharedPreferences("HT",MODE_PRIVATE);			   
-							SharedPreferences.Editor editor = settings.edit();
+				   		{				   			
+			   				SharedPreferences shareduser = getSharedPreferences("userdata",MODE_PRIVATE);	;
+			   				SharedPreferences.Editor editor;
+							editor = shareduser.edit();
 						    			    
 						    	//	Toast.makeText(appContext,"Mail ingresado: "+mail.getText().toString(),Toast.LENGTH_SHORT).show();
 							
 							//TODO HACER LOGIN - ENVIAR GETREQUEST AL SERVIDOR
-							if(verificarUseryPass(etxUser.getText().toString(),etxPass.getText().toString(),getDeviceID()))
+							
+							if(metrequest.verificarUseryPass(etxUser.getText().toString(),etxPass.getText().toString(),getDeviceID()))
 							{
 							    editor.putString("HT_Start", "OK" );					    					
 							  //  editor.putString("CodeActiv",fnlstrCodeAct  );		//FD v19.3.13				    					
@@ -135,7 +150,7 @@ public class HowToUse extends Activity {
 							    	try
 								    {
 								    	Log.e(TAG,"[onCreate]Voy a empezar Near Location");
-								    	startActivity(new Intent(getApplicationContext(),WelcomeActivity.class));
+								    	startActivity(new Intent(getApplicationContext(),ServiceNear.class));
 								    }catch(Exception ex)
 								    {
 								    	Log.e(TAG,"[onCreate]Exception startAct How: "+ex);
@@ -172,6 +187,8 @@ public class HowToUse extends Activity {
 	    // TODO Auto-generated method stub
 	}
 
+	
+	/*
 	public boolean verificarUseryPass(String struser,String strpass,String imei)
 	{			    			   	 
    		final Gson gson = new Gson();
@@ -244,16 +261,29 @@ public class HowToUse extends Activity {
         }
         return bologin;
 	}
-	public class Logged
-	{
-		public Logged()
-		{}
-		int inlogged;
-		public int getinlogin()
-		{
-			return this.inlogged;
-		}
-	}
+	*/
+	private OnCheckedChangeListener chlistener =new OnCheckedChangeListener() {			 
+		 public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
+			 if(isChecked){
+				 Log.i(TAG,"[onCreate] IS CHECKED");
+				 switch(buttonview.getId())
+				 {
+				     case R.id.checkBoxNearLocation:
+				    	 Log.i(TAG,"[onCreate] NEAR IS CHECKED");
+				    	 checkBoxNear.setChecked(true);
+				    	 checkBoxRastreo.setChecked(false);
+				          
+				          break;
+				     case R.id.checkBoxRastreo:
+				    	 Log.i(TAG,"[onCreate] RASTREO IS CHECKED");
+				          checkBoxRastreo.setChecked(true);
+				          checkBoxNear.setChecked(false);				          
+				          break;				        	 
+				 }
+			 }			  
+		 }};
+		 
+
 	@Override
 	public void onBackPressed() {
 		Log.i("HowToUseHT", "[onBackPressed] onBackPressed");

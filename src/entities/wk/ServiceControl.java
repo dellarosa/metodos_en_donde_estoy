@@ -1,17 +1,19 @@
-package entities;
+package entities.wk;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 
+import metodos.MetodosRequest;
 import metodos.RequestTask;
 
 import com.google.gson.Gson;
 
 import domain.CategoryLocation;
 import domain.Gps;
-import entities.HTService;
+import entities.wk.ServiceControl;
 
 import android.app.Activity;
 import android.content.Context;
@@ -33,11 +35,11 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.content.BroadcastReceiver;
-import wlocation.wk.R;
+import entities.wk.R;
 
 
 
-public class HTService extends Activity  implements Runnable
+public class ServiceControl extends Activity  implements Runnable
 {
 	private static final String TAG = "HTService";
 
@@ -57,7 +59,7 @@ public class HTService extends Activity  implements Runnable
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public HTService()
+	public ServiceControl()
 	{
 		gpsnews=new Gps();
 	}
@@ -103,116 +105,27 @@ public class HTService extends Activity  implements Runnable
     	    {   
     			public void onClick(View v) 
     			{				
-    				try
-    		   		{    	
-    					dbLat= -31.445;																	//DEBUG
-    					dbLon= -58.4454;																//DEBUG
-    					if((dbLat!=0)||(dbLon!=0))
-    					{
-    						Log.i(TAG, "[Handler] HAY LATITUD Y/O LONGITUD");							//DEBUG
-    						
-    						SharedPreferences settings = getSharedPreferences("HT",MODE_PRIVATE);
-	    			   		
-    						btEnvioURL.setSelected(true); 
-	    			   			    			   	 
-	    			   		final Gson gson = new Gson();	    			   		
-	    			   		//Gps objGps=new Gps("AndCYS",dbLat,dbLon,dbAlt,flSpeed,Imei,settings.getString("CodeActiv",null),strLevelbat);
-	    			   		Gps objGps=gpsnews;
-	    			   		Log.i(TAG,"DATOS GPS: "+gpsnews.getLatitud()+" "+gpsnews.getLongitud());
-	    			   		final String json = gson.toJson(objGps); 
-	    			   		
-	    			   		//String urlCatLoc = new String("http://192.168.252.129:3333/location_points/near_location_points.json?lat=-34.593968&lng=-58.413883");
-	    			   		//String urlCatLoc = new String("http://192.168.252.129:3333/location_points/near_location_points.json?"+json);
-	    			   		//String urlCatLoc = new String("http://sharedpc.dnsalias.com:3001/location_points/near_location_points.json?"+json);
-	    			   		String urlCatLoc = new String("http://sharedpc.dnsalias.com:3001/location_points/near_location_points.json?alt=0.0&battery=50&code=CYS172827&id=AndCYS&imei=000000000000003&lat=-34.593968&lng=-58.413882&vel=0.0");
-	    			   		
-	    			   		Log.i(TAG, "[Handler] ENVIAR URL: "+urlCatLoc );		//DEBUG
-	    			        try
-	    			        {
-	    			        	objT = (RequestTask) new RequestTask().execute(urlCatLoc);
-	    			        }catch(Exception ex)
-	    			        {
-	    			        	Log.i(TAG, "[Handler] REQUEST EXCEPTION: "+ex );		//DEBUG
-	    			        	if(btEnvioURL.isSelected())
-	    			        	{
-	    			        		btEnvioURL.setSelected(false);
-	    			        	}
-	    			        	return;
-	    			        }
-	    			        /////////////////////////////////////////////////////////////////////////////
-	    			      
-	    			        try
-	    			        {	
-		    			       TimerState=false;	    			       
-					    	   new CountDownTimer(5000, 1000) {
-					    		     public void onTick(long millisUntilFinished) {			    		         
-					    		         Log.i(TAG, "[Handler] ONTICK: "+millisUntilFinished/1000);		//DEBUG
-					    		     }
-					    		     public void onFinish() {
-					    		    	 Log.i(TAG, "[Handler] TIMER DONE");		//DEBUG
-					    		    	 TimerState=true;    
-					    		    	 if(objT.getResponse()==null)
-					    		    	 {
-					    		    		 Log.i(TAG, "[Handler] RESPONSE NULL");		//DEBUG
-					    		    	 }else		//////////////OBTUVE RESPUESTA DE ENVIO... CATEGORIAS ...
-					    		    	 {
-					    		    		 
-					    		    		 Log.i(TAG, "[Handler] RESPONSE : "+objT.getResponse());		//DEBUG
-					    		    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-					    		    		 ///TODO: CATEGORYLocation deberian ser dos clases, pero todavia no probe el gson para dos objetos uno dentro de otro FD v15.3.13
-				    		    			CategoryLocation[] arrobjCatLoc = gson.fromJson(objT.getResponse(), CategoryLocation[].class);
-				    		    			
-				    		    			if(arrobjCatLoc.length>0)
-				    		    			{
-					    		    			Intent IntMetodosMap = null;				    				    
-					    					    try
-					    					    {
-					    					    	IntMetodosMap=new Intent(getApplicationContext(),HTService.class);
-					    					    	IntMetodosMap.putExtra("DatosCatLoc", arrobjCatLoc);
-					    					    	
-					    					    }catch(Exception Ex)
-					    					    {
-					    					    	Log.e(TAG,"[Handler] Exception MetodosMapas Intent: "+Ex);	
-					    					    }
-					    					    try
-					    						{
-					    					    	startActivity(IntMetodosMap);
-					    						}catch(Exception ex)
-					    						{
-					    							Log.i(TAG,"[Handler] Exception MetodosMapas Start: "+ex);	
-					    						}					
-				    		    			}else
-				    		    			{
-				    		    				Log.i(TAG,"[Handler] NO HAY CATEGORIAS CERCA");
-				    		    			}			    		    			
-				    		    			
-					    		    	 }
-					    		    	 btEnvioURL.setSelected(false);
-					    		     }
-					    		  }.start();
-				
-		    			       /// USO UN THREAD ASINCRONICO PERO NO QUIERO QUE REALICE OTRA COSA SI NOT ENGO LA RESPUESTA,
-		    			       /// DE ESTE MODO MANEJO LA RESPUESTA 
-	    			        }catch(Exception ex)
-	    			        {
-	    			        	Log.i(TAG, "[Handler] Exception: "+ex);		//DEBUG
-	    			        	if(btEnvioURL.isSelected())
-	    			        	{
-	    			        		btEnvioURL.setSelected(false);
-	    			        	}
-	    			        	return;
-	    			        }
-    					}else
-    					{
-    						Log.i(TAG, "[Handler] NO HAY COORDENADADS PARA ENVIAR ");		//DEBUG
-    					}
-    		   		}catch(Exception ex)
-    		   		{
-    		   			Log.e(TAG, "[Handler] Exploto todo: "+ex );		//DEBUG
-    		   			
-    		   		}
-
+    				///TODO OBTENER COORDENADAS PARA ENVIAR AL SERVIDOR
+    				MetodosRequest metrequest=new MetodosRequest();
+    				Collection<CategoryLocation> colcatloc=metrequest.obtenerLocacionesCercanas(gpsnews);
     				
+    				/*Intent IntMetodosMap = null;				    				    
+				    try
+				    {
+				    	IntMetodosMap=new Intent(getApplicationContext(),HTService.class);
+				    	IntMetodosMap.putExtra("DatosCatLoc", colcatloc);
+				    	
+				    }catch(Exception Ex)
+				    {
+				    	Log.e(TAG,"[Handler] Exception MetodosMapas Intent: "+Ex);	
+				    }
+				    try
+					{
+				    	startActivity(IntMetodosMap);
+					}catch(Exception ex)
+					{
+						Log.i(TAG,"[Handler] Exception MetodosMapas Start: "+ex);	
+					}*/					
     			}
     	    });
         	
@@ -259,7 +172,7 @@ public class HTService extends Activity  implements Runnable
 		 SharedPreferences settings ;
      	 settings = getSharedPreferences("HT",MODE_PRIVATE);
      	 
-		setContentView(R.layout.viewsender);
+		setContentView(R.layout.servicecontrol);
 		
 		TextView txtImei = (TextView) findViewById(R.id.TextViewNuevoUsuario2);
 	    TextView txtCode = (TextView) findViewById(R.id.TextViewCode2);
@@ -277,7 +190,7 @@ public class HTService extends Activity  implements Runnable
        	{
     		//myIntent = new Intent(cont, HTService.class);
     		
-    		 myIntent=new Intent(this.getApplicationContext(),HTService.class);
+    		 myIntent=new Intent(this.getApplicationContext(),ServiceControl.class);
 	    		
 	       	}catch(Exception ex)
 	         {
@@ -346,31 +259,6 @@ public class HTService extends Activity  implements Runnable
     	
 	    // do nothing.
 	}
-	/*
-	public int onStartCommand(Intent intent, int flags, int startId)
-	{    
-		Log.e(TAG, "[onStartCommand] onStartCommand");							//DEBUG
-	    super.onStartCommand(intent, flags, startId);       
-	    return START_STICKY;
-	}
-	*/
-	
-	/*			////EL ONDESTROY ES PARA SERVICIOS
-	@Override
-	public void onDestroy()
-	{
-	     Log.e(TAG, "[onDestroy] onDestroy");								//DEBUG
-	    super.onDestroy();
-	    if (mLocationManager != null) {
-	        for (int i = 0; i < mLocationListeners.length; i++) {
-	            try {
-	                mLocationManager.removeUpdates(mLocationListeners[i]);
-	            } catch (Exception ex) {
-	                Log.i(TAG, "[onDestroy] fail to remove location listners, ignore", ex);			//DEBUG
-	            }
-	        }
-	    }
-	} 
-	*/
+
 	
 }

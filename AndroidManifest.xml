@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.palermo.endondeestoy"
+    package="entities.wk"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -27,7 +27,7 @@
           >      
         
         <activity
-            android:name="edu.palermo.endondeestoy.DondeEstoy"
+            android:name=".DondeEstoy"
             android:configChanges="orientation"
             android:label="@string/title_activity_main" >
             <intent-filter>
@@ -39,7 +39,7 @@
         </activity>
 
        <activity
-        	android:name="edu.palermo.endondeestoy.HowToUse"
+        	android:name="entities.wk.HowToUse"
         	android:label="@string/app_name" >
         	<intent-filter>
 	            <category android:name="android.intent.category.LAUNCHER" />
@@ -47,7 +47,7 @@
     	</activity>
     	
         <activity
-        	android:name="edu.palermo.endondeestoy.WelcomeActivity"
+        	android:name="entities.wk.WelcomeActivity"
         	android:label="@string/app_name" >
         	<intent-filter>
 	            <category android:name="android.intent.category.LAUNCHER" />
@@ -55,7 +55,7 @@
     	</activity>
     	
         <activity
-        	android:name="edu.palermo.endondeestoy.HTService"
+        	android:name=".ServiceControl"
         	android:label="@string/app_name" 
         	android:noHistory="true"
         	>

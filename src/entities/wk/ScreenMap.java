@@ -1,10 +1,10 @@
-package entities;
+package entities.wk;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import wlocation.wk.R;
+import entities.wk.R;
 
 import android.app.Activity;
 import android.content.Context;
@@ -49,7 +49,7 @@ public class ScreenMap extends Activity{
 				Intent IntHTService = null;				    				    
 			    try
 			    {
-			    	IntHTService=new Intent(getApplicationContext(),HTService.class);
+			    	IntHTService=new Intent(getApplicationContext(),ServiceControl.class);
 			    }catch(Exception Ex)
 			    {
 			    	Log.e(TAG,"[onCreate] Exception MetodosMapas Intent: "+Ex);	
