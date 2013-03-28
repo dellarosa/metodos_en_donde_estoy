@@ -5,10 +5,10 @@ public class Gps
 	
 	public static String TAG = "Gps";
 	
-	private String lat;
-	private String lng;
-	private String vel;
-	private String alt;
+	private double lat;
+	private double lng;
+	private double vel;
+	private double alt;
 	private String imei;
 	private String id;
 	private String code;
@@ -18,7 +18,7 @@ public class Gps
 	{
 		
 	}
-	public Gps(String Idc,String Lat,String Long,String Alti,String Speed,String Imei,String Code,String Battery)
+	public Gps(String Idc,double Lat,double Long,double Alti,double Speed,String Imei,String Code,String Battery)
 	{
 		this.lat=Lat;
 		this.lng=Long;
@@ -30,60 +30,60 @@ public class Gps
 		this.battery=Battery;
 	}
 	
-	 public String GetLatitud()
+	 public double getLatitud()
 	 {
 		 return lat;
 	 }
-	 public String GetLongitud()
+	 public double getLongitud()
 	 {
 		 return lng;
 	 }
-	 public String GetAltitud()
+	 public double getAltitud()
 	 {
 		 return this.alt;
 	 }
-	 public String GetVelocidad()
+	 public double getVelocidad()
 	 {
 		 return this.vel;
 	 }
 	 
-	 public void SetLat(String Lat)
+	 public void setLat(double d)
 	 {
-			this.lat=Lat;
+			this.lat=d;
 
 	 }
-	 public void SetLong(String Long)
+	 public void setLong(double Long)
 	 {
 			this.lng=Long;
 
 	 }
-	 public void SetVeloc(String Speed)
+	 public void setVeloc(double Speed)
 	 {
 			this.vel=Speed;
 
 	 }
-	 public void SetAltit(String Alti)
+	 public void setAltit(double Alti)
 	 {
 			this.alt=Alti;
 					 
 	 }
-	 public void SetIdTipoCel(String IdTipocel)
+	 public void setIdTipoCel(String IdTipocel)
 	 {
 
 			this.id=IdTipocel;
 
 	 }
-	 public void SetImei(String sImei)
+	 public void setImei(String sImei)
 	 {		 
 		 this.imei=sImei;
 		 
 	 }
-	 public void SetBattery(String sBattery)
+	 public void setBattery(String sBattery)
 	 {
 		
 			this.battery=sBattery;
 	 }
-	 public void SetCode(String Code)
+	 public void setCode(String Code)
 	 {
 			this.code=Code; 
 	 }

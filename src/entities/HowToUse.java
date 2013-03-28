@@ -1,4 +1,4 @@
-package wlocation.wk;
+package entities;
 
 import java.util.Random;
 
@@ -10,6 +10,7 @@ import domain.CategoryLocation;
 import domain.Definiciones;
 import domain.Gps;
 import domain.Definiciones.*;
+import entities.Files;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,7 +27,6 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
-import wlocation.wk.Files;
 import wlocation.wk.R;
 
 public class HowToUse extends Activity {

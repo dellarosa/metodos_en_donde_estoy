@@ -1,12 +1,12 @@
-package wlocation.wk;
+package entities;
 
+//import entities.HTService;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
-import wlocation.wk.HTService;
 import wlocation.wk.R;
 
 

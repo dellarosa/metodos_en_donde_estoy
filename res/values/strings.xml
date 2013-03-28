@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">World Location</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">World Location</string>    
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">World Location</string>
-	<string name="hello">Hello World, AndroidHTActivity!</string>
+    <string name="title_activity_main">World Location</string>	
 	<string name="Latitud">Latitud:</string>
     <string name="Longitud">Longitud:</string>
     <string name="CantidadAct">Actualizaciones:</string>

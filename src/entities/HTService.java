@@ -1,4 +1,4 @@
-package wlocation.wk;
+package entities;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 
 import domain.CategoryLocation;
 import domain.Gps;
+import entities.HTService;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,7 +33,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.content.BroadcastReceiver;
-import wlocation.wk.HTService;
 import wlocation.wk.R;
 
 
@@ -40,14 +40,7 @@ import wlocation.wk.R;
 public class HTService extends Activity  implements Runnable
 {
 	private static final String TAG = "HTService";
-	private LocationManager mLocationManager = null;
-	private TelephonyManager mTelephoneManager = null;
-	private static final int LOCATION_INTERVAL = 10000;
-	//private static final float LOCATION_DISTANCE = 5.0f;
-	private static final float LOCATION_DISTANCE = 0;
-	////////////////// UPDATE TELA /////////////////
-	//GPSData objGPSDataClass=new GPSData();
-	//GPSData objGPSDataClass;
+
 	public double dbLat=0;
 	public double dbLon=0;
 	public double dbAlt=0;
@@ -56,17 +49,17 @@ public class HTService extends Activity  implements Runnable
 	String Imei;
 
 	public Thread currentThread = new Thread(this);
-	//private Handler handler = new Handler();
-	//RequestTask objRQTsk=new RequestTask();
+
 	boolean TimerState=false; 
 	RequestTask objT;
 	boolean flagNewLocation;
+	Gps gpsnews=new Gps();
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public HTService()
 	{
-		
+		gpsnews=new Gps();
 	}
 		
 	public void run() {
@@ -75,13 +68,6 @@ public class HTService extends Activity  implements Runnable
 		Log.i(TAG, "[run] Run");									//DEBUG
 		try
 		{
-			//Thread currentThread = new Thread(this);
-		   // currentThread.start();
-			//threadHandler.postDelayed(this,1000);	//Para hacer el handler constante
-			//startUpdateCoordinates();
-			//Thread.sleep(1000);			
-			//Looper.prepare();
-			//Looper.loop();
 			threadHandler.sendEmptyMessage(0);
 						
 		}catch(Exception Ex)
@@ -92,27 +78,10 @@ public class HTService extends Activity  implements Runnable
 	}
 	
 	private Handler threadHandler = new Handler() {
-	
-		
-        @Override
+	     @Override
 		public void handleMessage(android.os.Message msg) {
-            // whenever the Thread notifies this handler we have
-            // only this behavior
-          //  threadModifiedText.setText("my text changed by the thread");
         	
-	   		        	 
         	startUpdateCoordinates();
-        	/*while(!currentThread.isAlive())
-        	{
-        		startUpdateCoordinates();
-        		try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
-        	*/
         		   		
         	Button btMinimizes = (Button) findViewById(R.id.btMinimizar);
     	    
@@ -127,9 +96,6 @@ public class HTService extends Activity  implements Runnable
     				
     			}
     	    });
-        	
-        	
-        	
         	
         	final Button btEnvioURL = (Button) findViewById(R.id.btEnviarURL);
     	    
@@ -150,8 +116,9 @@ public class HTService extends Activity  implements Runnable
     						btEnvioURL.setSelected(true); 
 	    			   			    			   	 
 	    			   		final Gson gson = new Gson();	    			   		
-	    			   		Gps objGps=new Gps("AndCYS",String.valueOf(dbLat),String.valueOf(dbLon),String.valueOf(dbAlt),String.valueOf(flSpeed),Imei,settings.getString("CodeActiv",null),strLevelbat);
-	    			   		
+	    			   		//Gps objGps=new Gps("AndCYS",dbLat,dbLon,dbAlt,flSpeed,Imei,settings.getString("CodeActiv",null),strLevelbat);
+	    			   		Gps objGps=gpsnews;
+	    			   		Log.i(TAG,"DATOS GPS: "+gpsnews.getLatitud()+" "+gpsnews.getLongitud());
 	    			   		final String json = gson.toJson(objGps); 
 	    			   		
 	    			   		//String urlCatLoc = new String("http://192.168.252.129:3333/location_points/near_location_points.json?lat=-34.593968&lng=-58.413883");
@@ -251,16 +218,12 @@ public class HTService extends Activity  implements Runnable
         	
         }
     };
- 
     
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		Log.e(TAG, "[onCreate] onCreate");		
 		 super.onCreate(savedInstanceState);	
-		// setContentView(R.layout.viewsender);
-			// appContext = this.getApplicationContext();
-		// Thread currentThread = new Thread(this);
 		 currentThread.start();		 		
 	}
 	
@@ -274,84 +237,14 @@ public class HTService extends Activity  implements Runnable
 		try
 		{	
 			voSetView();
-			
-			 int inTiempoEnvio=0;
-					 
-			       
-			    try
-			    {
-				    initializeLocationManager();
-				    
-				     inTiempoEnvio=Integer.valueOf(settings.getString("Timer",null))*1000;
-				     //inTiempoEnvio=1;
-			    }catch(Exception ex)
-			    {
-			    	Log.e(TAG, "[startUpdateCoordinates] ERROR: "+ex);		
-			    	//settings.edit().clear();
-			    }
-			    try {
-			        
-			    	if((inTiempoEnvio!=0))
-			    	{
-			    		Log.i(TAG, "[startUpdateCoordinates] inTiempoEnvio Net: "+inTiempoEnvio);		//DEBUG
-			    		
-			    		mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, inTiempoEnvio, LOCATION_DISTANCE,
-			    				mLocationListeners[1]);
-			    				//locationlistener);
-			    	}else
-			    	{
-			    		mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,2, LOCATION_DISTANCE,
-			    				//locationlistener);
-				    			mLocationListeners[1]);
-			    	}
-			    	Log.d(TAG, "[startUpdateCoordinates] Pase REQUEST_LOCATION_UPDATES");		//DEBUG    	
-			        
-			    	strLevelbat=strbatteryLevel();        
-			        Imei = mTelephoneManager.getDeviceId();
-			        
-			        
-			    } catch (java.lang.SecurityException ex) {
-			        Log.i(TAG, "[startUpdateCoordinates] fail to request location update, ignore", ex);		//DEBUG
-			    } catch (IllegalArgumentException ex) {
-			        Log.d(TAG, "[startUpdateCoordinates] network provider does not exist, " + ex.getMessage());		//DEBUG        
-			    }
-			  /////////////////////////////////////////////////////////////////////////
-			    try {
-			        
-			    	if((inTiempoEnvio!=0))
-			    	{
-			    		Log.i(TAG, "[startUpdateCoordinates] inTiempoEnvio GPS: "+inTiempoEnvio);		//DEBUG
-			    		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, inTiempoEnvio, LOCATION_DISTANCE,
-			    			//locationlistener);
-			    			mLocationListeners[0]);
-			    	}else
-			    	{
-			    		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,2, LOCATION_DISTANCE,
-			    				//locationlistener);
-			    				mLocationListeners[0]);
-			    	}
-			    	Log.d(TAG, "[startUpdateCoordinates] Pase REQUEST_LOCATION_UPDATES 2 DOS");		//DEBUG
-			    	
-			        Imei = mTelephoneManager.getDeviceId();      
-			        strLevelbat=strbatteryLevel();
-			        
-			    } catch (java.lang.SecurityException ex) {
-			        Log.i(TAG, "[startUpdateCoordinates] fail to request location update, ignore", ex);			//DEBUG
-			    } catch (IllegalArgumentException ex) {
-			        Log.d(TAG, "[startUpdateCoordinates] gps provider does not exist " + ex.getMessage());			//DEBUG
-			    }
-			    
-			    ///////////////////////////// TIMER //////////////////////////
-			       try
-					{
-			        	Log.i("HTService","[startUpdateCoordinates] Durmiendo el tiempo configurado TIME: "+settings.getString("Timer",null));
-						Thread.sleep(Integer.valueOf(settings.getString("Timer",null))*1000,0);
-					}
-					catch (InterruptedException e)
-					{
-						Log.i("HTService","SLEEP ERROR: "+e);
-					}
-			     //objGPSDataClass.updateCoordinates(dbLat,dbLon,dbAlt,flSpeed,Imei,strLevelbat);
+			 LocationListener[] mLocationListeners = new LocationListener[] 
+			 {  						 
+				new LocationListener(LocationManager.GPS_PROVIDER,gpsnews,this),
+		        new LocationListener(LocationManager.NETWORK_PROVIDER,gpsnews,this)
+			};
+			 mLocationListeners[0].startLocationListenerNet(Integer.valueOf(settings.getString("Timer",null)),mLocationListeners[0]);	//TIEMPO
+			 mLocationListeners[0].startLocationListenerNet(Integer.valueOf(settings.getString("Timer",null)),mLocationListeners[1]);	//TIEMPO
+			 
 		}catch(Exception Ex)
 		{
 			Log.e(TAG, "[startUpdateCoordinates] ERROR: "+Ex);									//DEBUG
@@ -373,133 +266,6 @@ public class HTService extends Activity  implements Runnable
 	    txtImei.setText(settings.getString("ImeiID",null));
 	    txtCode.setText(txtCode.getText()+settings.getString("CodeActiv",null));
 	}
-	////////////////////////////////////////////////////////LOCATION LISTENER /////////////////////////
-	
-	public class LocationListener implements android.location.LocationListener
-	{
-	   // Location mLastLocation;
-
-	     public LocationListener(String provider)
-	    {
-	    	
-	        Log.e(TAG, "[LocationListener] LocationListener Provider " + provider);				//DEBUG
-	      //  mLastLocation = new Location(provider);       
-	    }
-		    /////////////////////////////////////////////////////////////// ONLOCATION CHANGED ///////////////////////////
-		    
-			@SuppressWarnings("unused")
-			public void onLocationChanged(Location location )
-		    {
-				 SharedPreferences settings = getSharedPreferences("HT",MODE_PRIVATE);
-				
-				 flagNewLocation=true;
-								   		  	   		
-					   		Log.i(TAG,"[onLocationChanged] SOCKET ADDRESS Remote: ");			//DEBUG
-					   		
-					   		 dbLat=location.getLatitude();
-					   		 dbLon=location.getLongitude();
-					   		 dbAlt=location.getAltitude();
-					   		 flSpeed=location.getSpeed();
-					   		
-					   		 /*	v_D.00.01
-					   		  String test = "{"
-					   				  		+ "\"Id\":\""+"AndCYS"+"\","
-					   				  		+ "\"Lat\":\""+String.valueOf(dbLat)+"\","
-					   				  		+ "\"Lng\":\""+String.valueOf(dbLon)+"\","
-					   				  		+ "\"Alt\":\""+String.valueOf(dbAlt)+"\","
-					   				  		+ "\"Spe\":\""+String.valueOf(flSpeed)+"\","						
-					   				  		+ "\"IMEI\":\""+Imei+"\","
-					   				  		+ "\"CodAct\":\""+settings.getString("CodeActiv",null)+"\","
-					   				  		+ "\"Batt\":\""+ strLevelbat+"\""
-					   		  				+ "}";
-					   		*/
-					   		 /*
-					   		//String urlCatLoc = new String("http://localhost:3000/location_points/near_location_points");
-					   		String urlCatLoc = new String("http://192.168.252.129:3000/location_points/near_location_points");
-					   		
-					   		Gps objGps=new Gps("AndCYS",String.valueOf(dbLat),String.valueOf(dbLon),String.valueOf(dbAlt),String.valueOf(flSpeed),Imei,settings.getString("CodeActiv",null),strLevelbat);  
-					   
-					   	// Create a new RestTemplate instance
-					   		RestTemplate restTemplate = new RestTemplate();
-
-					   		Log.i(TAG, "[onLocationChanged] PASE TEMPLATE REST" );		//DEBUG
-					   		// Add the Jackson message converter
-					   		//restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-					   		//restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
-					   		restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
-					   		//restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
-					   		
-					   		// Make the HTTP GET request, marshaling the response from JSON to an array of Events
-					   		CategoryLocation[] objCatLoc = restTemplate.getForObject(urlCatLoc, CategoryLocation[].class);
-					   		int x=0;
-					   		while(x<objCatLoc.length)
-					   		{
-					   			Log.i(TAG, "[onLocationChanged] Category Id: "+objCatLoc[x].getIdCategory() + " - Category Name: "+objCatLoc[x].getCategoryName()+" - Local Name: "+objCatLoc[x].getLocalName() );		//DEBUG
-					   		}
-					   		  */
-		    }
-		    public void onProviderDisabled(String provider)
-		    {
-		    	/*if(provider.equals("gps"))
-		    	{
-		            //Toast.makeText(getApplicationContext(), "GPS is off", Toast.LENGTH_LONG).show();
-		            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-		        }*/		    	
-		        Log.e(TAG, "[onProviderDisabled] onProviderDisabled: " + provider);					//DEBUG            
-		    }
-		    
-		    public void onProviderEnabled(String provider)
-		    {
-		        Log.e(TAG, "[onProviderEnabled] onProviderEnabled: " + provider);					//DEBUG
-		    }
-		    public void onStatusChanged(String provider, int status, Bundle extras)
-		    {
-		        Log.e(TAG, "[onStatusChanged] onStatusChanged: " + provider);						//DEBUG
-		    }
-		    
-		    protected void onDestroy() {
-		        stopListening();
-		        onDestroy();
-		    }
-	
-		    protected void onPause() {
-		        stopListening();
-		        onPause();
-		    }
-	
-		    protected void onResume() {
-		        startListening();
-		        onResume();
-		    }
-		    /**********************************************************************
-		     * helpers for starting/stopping monitoring of GPS changes below 
-		     **********************************************************************/
-		    private void startListening() {
-		    	mLocationManager.requestLocationUpdates(
-		            LocationManager.GPS_PROVIDER, 
-		            0, 
-		            0, 
-		            this
-		        );
-		    }
-	
-		    private void stopListening() {
-		        if (mLocationManager != null)
-		        	mLocationManager.removeUpdates(this);
-		    }
-	    
-	    
-	} 
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	 LocationListener[] mLocationListeners = new LocationListener[] 
-	 {  
-	 
-			new LocationListener(LocationManager.GPS_PROVIDER),
-	        new LocationListener(LocationManager.NETWORK_PROVIDER)
-	};
-	
 
 	///////////////////////////////////////////onRestart///////////////////////////////////////////////////////////
 	 @Override
@@ -527,24 +293,7 @@ public class HTService extends Activity  implements Runnable
 	     // Activity being restarted from stopped state    
 	 }
 	 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////
-	public void initializeLocationManager() 
-	{
-	   Log.e(TAG, "[initializeLocationManager] initializeLocationManager");				//DEBUG
-	   
-	    if (mLocationManager == null) {
-	    	Log.e(TAG, "[initializeLocationManager] mLocationManager == NULL");				//DEBUG
-	    	mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-	    }
-	   // mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-	    
-	    if (mTelephoneManager == null)
-	    {
-	    	Log.e(TAG, "[initializeLocationManager] mTelephoneManager==NULL");				//DEBUG
-	    	mTelephoneManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-	    }
-	   // mTelephoneManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-	}
+	
 	
 	//////////////////////////////////////////////// BATTERY &////////////////////////////////////////
 	public String strbatteryLevel() {

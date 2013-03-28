@@ -1,4 +1,4 @@
-package wlocation.wk;
+package entities;
 
 import wlocation.wk.R;
 import android.app.Activity;

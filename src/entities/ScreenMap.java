@@ -1,4 +1,4 @@
-package wlocation.wk;
+package entities;
 
 import java.io.IOException;
 import java.util.List;
