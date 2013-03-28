@@ -128,8 +128,7 @@ public class HowToUse extends Activity {
 							//TODO HACER LOGIN - ENVIAR GETREQUEST AL SERVIDOR
 							
 							if(metrequest.verificarUseryPass(etxUser.getText().toString(),etxPass.getText().toString(),getDeviceID()))
-							{
-							    editor.putString("HT_Start", "OK" );					    					
+							{				    					
 							  //  editor.putString("CodeActiv",fnlstrCodeAct  );		//FD v19.3.13				    					
 							    editor.putString("Imei",getDeviceID());
 							    editor.putString("User",etxUser.getText().toString());
