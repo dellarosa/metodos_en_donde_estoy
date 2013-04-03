@@ -7,12 +7,13 @@ import java.util.Locale;
 import java.util.Timer;
 
 import metodos.MetodosRequest;
-import metodos.RequestTask;
+import metodos.RequestTaskAsync;
 
 import com.google.gson.Gson;
 
-import domain.CategoryLocation;
+import domain.CategoryPoints;
 import domain.Gps;
+import domain.LocationListener;
 import entities.wk.ServiceControl;
 
 import android.app.Activity;
@@ -53,7 +54,7 @@ public class ServiceControl extends Activity  implements Runnable
 	public Thread currentThread = new Thread(this);
 
 	boolean TimerState=false; 
-	RequestTask objT;
+	RequestTaskAsync objT;
 	boolean flagNewLocation;
 	Gps gpsnews=new Gps();
 	
@@ -107,7 +108,7 @@ public class ServiceControl extends Activity  implements Runnable
     			{				
     				///TODO OBTENER COORDENADAS PARA ENVIAR AL SERVIDOR
     				MetodosRequest metrequest=new MetodosRequest();
-    				Collection<CategoryLocation> colcatloc=metrequest.obtenerLocacionesCercanas(gpsnews);
+    				Collection<CategoryPoints> colcatloc=metrequest.obtenerLocacionesCercanas(gpsnews);
     				
     				/*Intent IntMetodosMap = null;				    				    
 				    try
@@ -156,7 +157,7 @@ public class ServiceControl extends Activity  implements Runnable
 		        new LocationListener(LocationManager.NETWORK_PROVIDER,gpsnews,this)
 			};
 			 mLocationListeners[0].startLocationListenerNet(Integer.valueOf(settings.getString("Timer",null)),mLocationListeners[0]);	//TIEMPO
-			 mLocationListeners[0].startLocationListenerNet(Integer.valueOf(settings.getString("Timer",null)),mLocationListeners[1]);	//TIEMPO
+			 mLocationListeners[1].startLocationListenerGps(Integer.valueOf(settings.getString("Timer",null)),mLocationListeners[1]);	//TIEMPO
 			 
 		}catch(Exception Ex)
 		{

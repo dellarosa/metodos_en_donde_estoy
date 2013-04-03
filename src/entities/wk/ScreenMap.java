@@ -22,7 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.content.*;
 
-import domain.CategoryLocation;
+import domain.CategoryPoints;
 
 public class ScreenMap extends Activity{
 
@@ -66,7 +66,7 @@ public class ScreenMap extends Activity{
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    
 	    ///TODO: EN VERDAD DEBERIAN SER DOS CLASES DISTINTAS; UNA PARA LOCAL-Tipo Y LA OTRA PARA CATEGORIA, PERO TODAVIA NO PROBE getSerializable...para un objeto dentro de otro  //FD v15.3.13
-	     CategoryLocation[] objCategoryLoc=(CategoryLocation[]) getIntent().getSerializableExtra("DatosCatLoc");
+	     CategoryPoints[] objCategoryLoc=(CategoryPoints[]) getIntent().getSerializableExtra("DatosCatLoc");
 		
 	     if(this.ColocarPuntosEnMapa(objCategoryLoc))
 		{
@@ -80,7 +80,7 @@ public class ScreenMap extends Activity{
 	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	public boolean ColocarPuntosEnMapa(CategoryLocation[] objCatLoc)
+	public boolean ColocarPuntosEnMapa(CategoryPoints[] objCatLoc)
 	{
 		TextView txViewAddress;
 		
@@ -91,7 +91,7 @@ public class ScreenMap extends Activity{
    		{
    			List<Address> addresses = null;
    			try {
-				addresses = geocoder.getFromLocation(Double.valueOf(objCatLoc[x].getLatitudLocal()),Double.valueOf(objCatLoc[x].getLongitudLocal()), 1);			
+				addresses = geocoder.getFromLocation(Double.valueOf(objCatLoc[x].getLatitud()),Double.valueOf(objCatLoc[x].getLongitud()), 1);			
 				
 				
 			} catch (NumberFormatException e) {
@@ -102,7 +102,7 @@ public class ScreenMap extends Activity{
 				Log.i(TAG, "[onCreate] Adresses IO exception: "+e  );		//DEBUG
 				e.printStackTrace();
 			}
-   			Log.i(TAG, "[onCreate] Category Id: "+objCatLoc[x].getIdCategory() + " - Category Name: "+objCatLoc[x].getCategoryName()+" - Local Name: "+objCatLoc[x].getLocalName() );		//DEBUG
+   			Log.i(TAG, "[onCreate] Category Id: "+objCatLoc[x].getCategory() + " - Category Name: "+objCatLoc[x].getCategoryName());		//DEBUG
    			
    			if (addresses.size() > 0) 
    			{

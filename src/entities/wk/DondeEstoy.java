@@ -1,14 +1,14 @@
 package entities.wk;
 
 //import entities.HTService;
+
 import android.app.Activity;
-import android.content.Context;
+
 import android.content.Intent;
-import android.content.SharedPreferences;
+
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
-import entities.wk.R;
+
 
 
 public class DondeEstoy extends Activity {
@@ -34,16 +34,8 @@ public class DondeEstoy extends Activity {
          try
          {
         	 super.onCreate(savedInstanceState);	 
-        	 Log.i(TAG,"[onCreate] Super");											//DEBUG
-           		
-    	     //setContentView(R.layout.dondeestoy);
-    	     
-        	 SharedPreferences settings ; //= null;
-        	// settings.edit().clear();        	 
-        	 settings = getSharedPreferences("HT",MODE_PRIVATE);
-        	 Log.i(TAG,"[onCreate] getsharedPreference");							//DEBUG
-        	 
-        	 
+        	 Log.i(TAG,"[onCreate] Super");									//DEBUG
+    	     //setContentView(R.layout.dondeestoy);        	 
 		       // if(!settings.contains("StartService"))			//FD PARA QUE PASE SIEMPRE POR LA PANTALLA  INICIAL.
 		        //{
 		        	Log.i(TAG,"[onCreate] Not Contain StartService");				//DEBUG
@@ -53,7 +45,7 @@ public class DondeEstoy extends Activity {
 		        		try
 		        		{
 		        			Log.i(TAG,"[onCreate] INTENT HOW TO USE");				//DEBUG
-		        			IntHow=new Intent(this.getApplicationContext(),HowToUse.class);
+		        			IntHow=new Intent(this.getApplicationContext(),Loggin.class);
 		        		}catch(Exception exc)
 		        		{		        			
 		        			Log.e(TAG,"[onCreate] IntentHow Excp: "+exc);

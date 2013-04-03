@@ -1,6 +1,5 @@
-package entities.wk;
+package domain;
 
-import domain.Gps;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,7 +34,7 @@ public class LocationListener implements android.location.LocationListener
     {
     	 this.mcontext=mcontext;
     	 this.gps=gps;
-        Log.e(TAG, "[LocationListener] LocationListener Provider " + provider);				//DEBUG
+        Log.i(TAG, "[LocationListener] LocationListener Provider " + provider);				//DEBUG
       //  mLastLocation = new Location(provider);
         initializeLocationManager();	//Pruebo de llamarlo desde aca.
     }
@@ -43,27 +42,28 @@ public class LocationListener implements android.location.LocationListener
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		public void initializeLocationManager() 
 		{
-		Log.e(TAG, "[initializeLocationManager] initializeLocationManager");				//DEBUG
-		
-		if (mLocationManager == null) {
-			Log.e(TAG, "[initializeLocationManager] mLocationManager == NULL");				//DEBUG
-			mLocationManager = (LocationManager)mcontext.getSystemService(Context.LOCATION_SERVICE);
-		}
-		// mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
-		
-		if (mTelephoneManager == null)
-		{
-			Log.e(TAG, "[initializeLocationManager] mTelephoneManager==NULL");				//DEBUG
-			mTelephoneManager = (TelephonyManager) mcontext.getSystemService(Context.TELEPHONY_SERVICE);
-		}
-		// mTelephoneManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+			Log.i(TAG, "[initializeLocationManager] initializeLocationManager");				//DEBUG
+			
+			if (mLocationManager == null) {
+				Log.i(TAG, "[initializeLocationManager] mLocationManager == NULL");				//DEBUG
+				mLocationManager = (LocationManager)mcontext.getSystemService(Context.LOCATION_SERVICE);
+			}
+			// mLocationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+			
+			if (mTelephoneManager == null)
+			{
+				Log.i(TAG, "[initializeLocationManager] mTelephoneManager==NULL");				//DEBUG
+				mTelephoneManager = (TelephonyManager) mcontext.getSystemService(Context.TELEPHONY_SERVICE);
+			}
+			// mTelephoneManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+			Log.i(TAG, "[initializeLocationManager] TERMINE initializeLocationManager");				//DEBUG
 		}
 	    /////////////////////////////////////////////////////////////// ONLOCATION CHANGED ///////////////////////////
 	    
 		@SuppressWarnings("unused")
 		public void onLocationChanged(Location location )
 	    {			 
-			 SharedPreferences settings = mcontext.getSharedPreferences("HT",Context.MODE_PRIVATE);
+			// SharedPreferences settings = mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
 			
 			 //flagNewLocation=true;
 							   		  	   		
@@ -88,16 +88,16 @@ public class LocationListener implements android.location.LocationListener
 	            //Toast.makeText(getApplicationContext(), "GPS is off", Toast.LENGTH_LONG).show();
 	            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 	        }*/		    	
-	        Log.e(TAG, "[onProviderDisabled] onProviderDisabled: " + provider);					//DEBUG            
+	        Log.i(TAG, "[onProviderDisabled] onProviderDisabled: " + provider);					//DEBUG            
 	    }
 	    
 	    public void onProviderEnabled(String provider)
 	    {
-	        Log.e(TAG, "[onProviderEnabled] onProviderEnabled: " + provider);					//DEBUG
+	        Log.i(TAG, "[onProviderEnabled] onProviderEnabled: " + provider);					//DEBUG
 	    }
 	    public void onStatusChanged(String provider, int status, Bundle extras)
 	    {
-	        Log.e(TAG, "[onStatusChanged] onStatusChanged: " + provider);						//DEBUG
+	        Log.i(TAG, "[onStatusChanged] onStatusChanged: " + provider);						//DEBUG
 	    }
 	    
 	    protected void onDestroy() {
@@ -118,12 +118,7 @@ public class LocationListener implements android.location.LocationListener
 	     * helpers for starting/stopping monitoring of GPS changes below 
 	     **********************************************************************/
 	    private void startListening() {
-	    	mLocationManager.requestLocationUpdates(
-	            LocationManager.GPS_PROVIDER, 
-	            0, 
-	            0, 
-	            this
-	        );
+	    	mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
 	    }
 
 	    private void stopListening() {
@@ -134,7 +129,7 @@ public class LocationListener implements android.location.LocationListener
 		
 		public void startLocationListenerNet(int inTiempoEnvio,LocationListener mLocationListeners)
 		{
-			SharedPreferences settings = mcontext.getSharedPreferences("HT",Context.MODE_PRIVATE);
+			SharedPreferences settings = mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
 			final int LOCATION_INTERVAL = 10000;
 			//private static final float LOCATION_DISTANCE = 5.0f;
 			final float LOCATION_DISTANCE = 0;
@@ -143,7 +138,7 @@ public class LocationListener implements android.location.LocationListener
 			    	
 			    	if((inTiempoEnvio!=0))
 			    	{
-			    		Log.i(TAG, "[startUpdateCoordinates] inTiempoEnvio Net: "+inTiempoEnvio);		//DEBUG
+			    		Log.i(TAG, "[startLocationListenerNet] inTiempoEnvio Net: "+inTiempoEnvio);		//DEBUG
 			    		
 						
 						 
@@ -156,33 +151,33 @@ public class LocationListener implements android.location.LocationListener
 			    				//locationlistener);
 				    			mLocationListeners);
 			    	}
-			    	Log.d(TAG, "[startUpdateCoordinates] Pase REQUEST_LOCATION_UPDATES");		//DEBUG    	
+			    	Log.i(TAG, "[startLocationListenerNet] Pase REQUEST_LOCATION_UPDATES");		//DEBUG    	
 			        
 			    	gps.setBattery(strbatteryLevel());        
 			        //gpsnews = mLocationListeners[1].getTelMgr().getDeviceId();
 			        
 			        
 			    } catch (java.lang.SecurityException ex) {
-			        Log.i(TAG, "[startUpdateCoordinates] fail to request location update, ignore", ex);		//DEBUG
+			        Log.e(TAG, "[startLocationListenerNet] fail to request location update, ignore", ex);		//DEBUG
 			    } catch (IllegalArgumentException ex) {
-			        Log.d(TAG, "[startUpdateCoordinates] network provider does not exist, " + ex.getMessage());		//DEBUG        
+			        Log.e(TAG, "[startLocationListenerNet] network provider does not exist, " + ex.getMessage());		//DEBUG        
 			    }
 			    
 			    ///////////////////////////// TIMER //////////////////////////
 			       try
 					{
-			        	Log.i("HTService","[startUpdateCoordinates] Durmiendo el tiempo configurado TIME: "+settings.getString("Timer",null));
-						Thread.sleep(Integer.valueOf(settings.getString("Timer",null))*1000,0);
+			        	Log.i("HTService","[startUpdateCoordinates] Durmiendo el tiempo configurado TIME: "+settings.getInt("Timer",2));
+						Thread.sleep(settings.getInt("Timer",2)*1000,0);
 					}
 					catch (InterruptedException e)
 					{
-						Log.i("HTService","SLEEP ERROR: "+e);
+						Log.e("HTService","SLEEP ERROR: "+e);
 					}
 		}
 		
 		public void startLocationListenerGps(int inTiempoEnvio,LocationListener mLocationListeners)
 		{
-			SharedPreferences settings = mcontext.getSharedPreferences("HT",Context.MODE_PRIVATE);
+			SharedPreferences settings = mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
 			final int LOCATION_INTERVAL = 10000;
 			//private static final float LOCATION_DISTANCE = 5.0f;
 			final float LOCATION_DISTANCE = 0;	
@@ -192,29 +187,29 @@ public class LocationListener implements android.location.LocationListener
 			        
 			    	if((inTiempoEnvio!=0))
 			    	{
-			    		Log.i(TAG, "[startUpdateCoordinates] inTiempoEnvio GPS: "+inTiempoEnvio);		//DEBUG
+			    		Log.i(TAG, "[startLocationListenerGps] inTiempoEnvio GPS: "+inTiempoEnvio);		//DEBUG
 			    		mLocationListeners.getLocMgr().requestLocationUpdates(LocationManager.GPS_PROVIDER, inTiempoEnvio, LOCATION_DISTANCE,mLocationListeners);
 			    	}else
 			    	{
 			    		mLocationListeners.getLocMgr().requestLocationUpdates(LocationManager.GPS_PROVIDER,2, LOCATION_DISTANCE,mLocationListeners);
 			    	}
-			    	Log.d(TAG, "[startUpdateCoordinates] Pase REQUEST_LOCATION_UPDATES 2 DOS");		//DEBUG
+			    	Log.d(TAG, "[startLocationListenerGps] Pase REQUEST_LOCATION_UPDATES 2 DOS");		//DEBUG
 			    	
 			        
 			    	//Imei = mLocationListeners[1].getTelMgr().getDeviceId();      
 			        gps.setBattery(strbatteryLevel());
 			        
 			    } catch (java.lang.SecurityException ex) {
-			        Log.i(TAG, "[startUpdateCoordinates] fail to request location update, ignore", ex);			//DEBUG
+			        Log.i(TAG, "[startLocationListenerGps] fail to request location update, ignore", ex);			//DEBUG
 			    } catch (IllegalArgumentException ex) {
-			        Log.d(TAG, "[startUpdateCoordinates] gps provider does not exist " + ex.getMessage());			//DEBUG
+			        Log.d(TAG, "[startLocationListenerGps] gps provider does not exist " + ex.getMessage());			//DEBUG
 			    }
 			    
 			    ///////////////////////////// TIMER //////////////////////////
 			       try
 					{
-			        	Log.i("HTService","[startUpdateCoordinates] Durmiendo el tiempo configurado TIME: "+settings.getString("Timer",null));
-						Thread.sleep(Integer.valueOf(settings.getString("Timer",null))*1000,0);
+			        	Log.i("HTService","[startLocationListenerGps] Durmiendo el tiempo configurado TIME: "+settings.getInt("Timer",2));
+						Thread.sleep(settings.getInt("Timer",2)*1000,0);
 					}
 					catch (InterruptedException e)
 					{

@@ -1,6 +1,6 @@
 package interfaces;
 
-import metodos.RequestTask;
+import metodos.RequestTaskAsync;
 import android.os.CountDownTimer;
 import android.util.Log;
 

@@ -1,16 +1,16 @@
 package domain;
 
-public class Category {
+public class CategoryLoc {
 
 	private Long idCategory;
 	private String strCategoryName;
 	private Local local;
 	
-	public Category()
+	public CategoryLoc()
 	{
 		
 	}
-	public Category(Long idCat,Long idLoc,String catname,String localname,String lat,String lng)
+	public CategoryLoc(Long idCat,Long idLoc,String catname,String localname,String lat,String lng)
 	{
 		this.idCategory=idCat;	
 		this.strCategoryName=catname;

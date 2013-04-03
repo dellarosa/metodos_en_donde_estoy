@@ -1,6 +1,7 @@
 package entities.wk;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -8,12 +9,13 @@ import java.util.Locale;
 import java.util.Timer;
 
 import metodos.MetodosRequest;
-import metodos.RequestTask;
+import metodos.RequestTaskAsync;
 
 import com.google.gson.Gson;
 
-import domain.CategoryLocation;
+import domain.CategoryPoints;
 import domain.Gps;
+import domain.LocationListener;
 import entities.wk.ServiceNear;
 
 import android.app.Activity;
@@ -25,6 +27,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -40,9 +43,9 @@ import entities.wk.R;
 
 
 
-public class ServiceNear extends Activity  implements Runnable
+public class ServiceNear extends Activity 
 {
-	private static final String TAG = "HTService";
+	private static final String TAG = "ServiceNear";
 
 	public double dbLat=0;
 	public double dbLon=0;
@@ -50,113 +53,87 @@ public class ServiceNear extends Activity  implements Runnable
 	public float flSpeed=0;
 	public String strLevelbat=null;
 	String Imei;
-
-	public Thread currentThread = new Thread(this);
+	
 
 	boolean TimerState=false; 
-	RequestTask objT;
+	RequestTaskAsync objT;
 	boolean flagNewLocation;
 	Gps gpsnews=new Gps();
-	
+	GetGPSData asyncgps;
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public ServiceNear()
 	{
 		gpsnews=new Gps();
 	}
-		
-	public void run() {
-		// TODO Auto-generated method stub
-		
-		Log.i(TAG, "[run] Run");									//DEBUG
-		try
-		{
-			threadHandler.sendEmptyMessage(0);
-						
-		}catch(Exception Ex)
-		{
-			Log.e(TAG, "[run] Error: " +Ex.getMessage());									//DEBUG
-		}
-		    
-	}
-	
-	private Handler threadHandler = new Handler() {
-	     @Override
-		public void handleMessage(android.os.Message msg) {
-        	
-        	startUpdateCoordinates();
-        		   		
-        	Button btMinimizes = (Button) findViewById(R.id.btMinimizar);
-    	    
-        	btMinimizes.setOnClickListener(new OnClickListener()
-    	    {     
-    			public void onClick(View v) 
-    			{				
-    				Intent startMain = new Intent(Intent.ACTION_MAIN);
-    	        	startMain.addCategory(Intent.CATEGORY_HOME);
-    	        	startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    	        	startActivity(startMain);
-    				
-    			}
-    	    });
-        	
-        	///TODO PARA QUE PUEDA ENVIAR EL REQUEST, PRIMERO DEBE HABER SELECCIONADO QUE DESEA BUSCAR (LISTA DE TIPOS)
-        	// TODO MOSTRAR CATEGORIAS DISPONIBLES
-        	final Button btEnvioURL = (Button) findViewById(R.id.btEnviarURL);
-    	    
-        	btEnvioURL.setOnClickListener(new OnClickListener()
-    	    {   
-    			public void onClick(View v) 
-    			{				
-    				///TODO OBTENER COORDENADAS PARA ENVIAR AL SERVIDOR
-    				MetodosRequest metrequest=new MetodosRequest();
-    				Collection<CategoryLocation> colcatloc=metrequest.obtenerLocacionesCercanas(gpsnews);
-    				
-    				Iterator<CategoryLocation> iterator=colcatloc.iterator();
-    				while(iterator.hasNext())
-    				{
-    					Log.e(TAG, "[threadHandler] NAME LOCAL: " +iterator.next().getLocalName());									//DEBUG    					
-    				}
-    				//TODO IMPLEMENTAR MAPA
-    				/*Intent IntMetodosMap = null;				    				    
-				    try
-				    {
-				    	IntMetodosMap=new Intent(getApplicationContext(),HTService.class);
-				    	IntMetodosMap.putExtra("DatosCatLoc", colcatloc);
-				    	
-				    }catch(Exception Ex)
-				    {
-				    	Log.e(TAG,"[Handler] Exception MetodosMapas Intent: "+Ex);	
-				    }
-				    try
-					{
-				    	startActivity(IntMetodosMap);
-					}catch(Exception ex)
-					{
-						Log.i(TAG,"[Handler] Exception MetodosMapas Start: "+ex);	
-					}*/					
-    			}
-    	    });
-        	
-        }
-    };
-    
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-		Log.e(TAG, "[onCreate] onCreate");		
+		Log.i(TAG, "[onCreate] onCreate");		
 		 super.onCreate(savedInstanceState);
 		 voSetView();
-		 currentThread.start();		 		
+		 this.startUpdateCoordinates();
+		 Log.i(TAG, "[onCreate] StartUPdateCoord: ");									//DEBUG
+		// currentThread.start();
+		 asyncgps=new GetGPSData();
+		 
+		 asyncgps.execute("");
+		 
+		 
+		 
+		 
+		 Button btMinimizes = (Button) findViewById(R.id.btMinimizar);    
+			btMinimizes.setOnClickListener(new OnClickListener()
+		    {     
+				public void onClick(View v) 
+				{				
+					Intent startMain = new Intent(Intent.ACTION_MAIN);
+		        	startMain.addCategory(Intent.CATEGORY_HOME);
+		        	startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		        	startActivity(startMain);
+					
+				}
+		    });
+			
+	}	
+	
+	
+	private class GetGPSData extends AsyncTask<String, Void, String>	
+	{
+		@Override
+		protected String doInBackground(String... params) 
+		{
+			Log.i(TAG, "[GetGPSData] GetGPSData");									//DEBUG
+			
+			
+			if(gpsnews.getLatitud()==0)
+			{}else
+			{
+				Log.i(TAG, "[GetGPSData] GetGPSData OK");									//DEBUG}
+			}
+			try
+			{
+				Thread.sleep(1000);
+			}catch(Exception ex)
+			{
+				
+			}
+			
+			
+			return "OK";	
+		}		
 	}
 	
 	
+
+	
 	public boolean startUpdateCoordinates()
 	{		
-		 SharedPreferences settings = getSharedPreferences("HT",MODE_PRIVATE);
-	
-   	
-		Log.e(TAG, "[startUpdateCoordinates] startUpdateCoordinates");									//DEBUG
+		 SharedPreferences settings = getSharedPreferences("Timer",MODE_PRIVATE);
+		 SharedPreferences.Editor editor= settings.edit();
+		 editor.putInt("Timer",1);
+		 editor.commit();
+		Log.i(TAG, "[startUpdateCoordinates] startUpdateCoordinates");									//DEBUG
 		try
 		{	
 			
@@ -165,8 +142,9 @@ public class ServiceNear extends Activity  implements Runnable
 				new LocationListener(LocationManager.GPS_PROVIDER,gpsnews,this),
 		        new LocationListener(LocationManager.NETWORK_PROVIDER,gpsnews,this)
 			};
-			 mLocationListeners[0].startLocationListenerNet(Integer.valueOf(settings.getString("Timer",null)),mLocationListeners[0]);	//TIEMPO
-			 mLocationListeners[0].startLocationListenerNet(Integer.valueOf(settings.getString("Timer",null)),mLocationListeners[1]);	//TIEMPO
+			 Log.i(TAG, "[initializeLocationManager] TIEMPO DE SLEEP: "+settings.getInt("Timer",2));				//DEBUG
+			 mLocationListeners[0].startLocationListenerNet(settings.getInt("Timer",2),mLocationListeners[0]);	//TIEMPO
+			 mLocationListeners[1].startLocationListenerGps(settings.getInt("Timer",2),mLocationListeners[1]);	//TIEMPO
 			 
 		}catch(Exception Ex)
 		{
@@ -178,16 +156,8 @@ public class ServiceNear extends Activity  implements Runnable
 	
 	///////////////////////////////////////////////////// Set View //////////////////////////////
 	public void voSetView()
-	{
-		 SharedPreferences settings ;
-     	 settings = getSharedPreferences("HT",MODE_PRIVATE);
-     	 
+	{			
 		setContentView(R.layout.servicenear);
-		
-		TextView txtImei = (TextView) findViewById(R.id.TextViewNuevoUsuario2);
-	    TextView txtCode = (TextView) findViewById(R.id.TextViewCode2);
-	    txtImei.setText(settings.getString("ImeiID",null));
-	    txtCode.setText(txtCode.getText()+settings.getString("CodeActiv",null));
 	}
 
 	///////////////////////////////////////////onRestart///////////////////////////////////////////////////////////
@@ -272,3 +242,59 @@ public class ServiceNear extends Activity  implements Runnable
 
 	
 }
+	
+		 
+		 /*
+	private Handler threadHandler = new Handler() {
+	     @Override
+		public void handleMessage(android.os.Message msg) {
+        	
+        	startUpdateCoordinates();
+        		   		
+        	
+        	
+        	///TODO PARA QUE PUEDA ENVIAR EL REQUEST, PRIMERO DEBE HABER SELECCIONADO QUE DESEA BUSCAR (LISTA DE TIPOS)
+        	// TODO MOSTRAR CATEGORIAS DISPONIBLES
+        	final Button btEnvioURL = (Button) findViewById(R.id.btEnviarURL);
+    	    
+        	btEnvioURL.setOnClickListener(new OnClickListener()
+    	    {   
+    			public void onClick(View v) 
+    			{				
+    				///TODO OBTENER COORDENADAS PARA ENVIAR AL SERVIDOR
+    				MetodosRequest metrequest=new MetodosRequest();
+    				ArrayList<CategoryPoints> arrcategorypoints=metrequest.obtenerLocacionesCercanas(gpsnews);
+
+    				for(CategoryPoints catp:arrcategorypoints)
+    				{
+    					Log.e(TAG, "[threadHandler] CategoryPoints: " +catp.getCategoryName());									//DEBUG	
+    				}
+    				    					
+    				
+    				//TODO IMPLEMENTAR MAPA
+    				/*Intent IntMetodosMap = null;				    				    
+				    try
+				    {
+				    	IntMetodosMap=new Intent(getApplicationContext(),HTService.class);
+				    	IntMetodosMap.putExtra("DatosCatLoc", colcatloc);
+				    	
+				    }catch(Exception Ex)
+				    {
+				    	Log.e(TAG,"[Handler] Exception MetodosMapas Intent: "+Ex);	
+				    }
+				    try
+					{
+				    	startActivity(IntMetodosMap);
+					}catch(Exception ex)
+					{
+						Log.i(TAG,"[Handler] Exception MetodosMapas Start: "+ex);	
+					}*/
+	/*
+    			}
+    	    });
+        	
+        }
+    };
+    */
+	
+	

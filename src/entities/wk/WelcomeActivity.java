@@ -1,5 +1,6 @@
 package entities.wk;
 
+import domain.Files;
 import entities.wk.R;
 import android.app.Activity;
 

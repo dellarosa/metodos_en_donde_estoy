@@ -15,13 +15,13 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 
-public class RequestTask extends AsyncTask<String, String, String>{
+public class RequestTaskAsync extends AsyncTask<String, String, String>{
 
 	private String strResponse;
 	
 	
 	String TAG="RequestTask";
-	public RequestTask()
+	public RequestTaskAsync()
 	{
 		strResponse=null;
 	}

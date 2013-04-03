@@ -1,29 +1,28 @@
 package metodos;
 
 import java.util.ArrayList;
-import java.util.Collection;
-
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.CountDownTimer;
 import android.util.Log;
 
 import com.google.gson.Gson;
 
-import domain.Category;
-import domain.CategoryLocation;
+import domain.CategoryPoints;
 import domain.Definiciones;
 import domain.Gps;
-import entities.wk.ServiceControl;
+import domain.ResponseClass;
+import domain.ResponseClass.Response_CategoryUpdate;
+import domain.ResponseClass.Response_NearLoc;
+import domain.ResponseClass.Response_YesOrNot;
+
 
 public class MetodosRequest {
 
 	String TAG="metodosRequest";
-	RequestTask objT;
+	RequestTaskAsync objT;
 	boolean TimerState;
 	boolean boresponse=false;
 	
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 	public boolean verificarUseryPass(String struser,String strpass,String imei)		//PUEDE SER Q ENVIE OBJETOS 
 	{			    			   	 
    		final Gson gson = new Gson();
@@ -34,14 +33,15 @@ public class MetodosRequest {
    		Log.i(TAG, "[verificarUseryPass] ENVIAR URL: "+urlLoc );		//DEBUG
         try
         {
-        	objT = (RequestTask) new RequestTask().execute(urlLoc);
+        	objT = (RequestTaskAsync) new RequestTaskAsync().execute(urlLoc);
         }catch(Exception ex)
         {
-        	Log.i(TAG, "[Handler] REQUEST EXCEPTION: "+ex );		//DEBUG
+        	Log.i(TAG, "[verificarUseryPass] REQUEST EXCEPTION: "+ex );		//DEBUG
         	return false;
         }
        try
        { 
+    	   this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);
 	        if(objT.getResponse()==null)
 		   	 {
 		   		 Log.i(TAG, "[verificarUseryPass] RESPONSE NULL");		//DEBUG
@@ -52,8 +52,8 @@ public class MetodosRequest {
 		   		 Log.i(TAG, "[verificarUseryPass] RESPONSE : "+objT.getResponse());		//DEBUG
 		   		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		   		
-		   		 responseYesOrNot objresponseyesornot=gson.fromJson(objT.getResponse(), responseYesOrNot.class);
-					if(objresponseyesornot.getResponseYesOrNot()==1) //LOGUEADO		    				
+		   		 Response_YesOrNot objresponseyesornot=gson.fromJson(objT.getResponse(), Response_YesOrNot.class);
+					if(objresponseyesornot.getCode()==000) //LOGUEADO		    				
 					{
 						boresponse=true;
 					}else	//NO LOGUEADO
@@ -68,14 +68,14 @@ public class MetodosRequest {
         }
         return boresponse;		//Podria devolver un objeto de determinada clase
 	}
-		
-    public Collection<CategoryLocation> obtenerLocacionesCercanas(Gps gpsloc)
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////	
+    public ArrayList<CategoryPoints> obtenerLocacionesCercanas(Gps gpsloc)
     {
     	try
 		{   
 			if((gpsloc!=null)&&((gpsloc.getLatitud()!=0)||(gpsloc.getLongitud()!=0)))
 			{
-				Log.i(TAG, "[Handler] HAY LATITUD Y/O LONGITUD");							//DEBUG
+				Log.i(TAG, "[obtenerLocacionesCercanas] HAY LATITUD Y/O LONGITUD");							//DEBUG
 		   			    			   	 
 		   		final Gson gson = new Gson();	    			   		
 		   		//Gps objGps=new Gps("AndCYS",dbLat,dbLon,dbAlt,flSpeed,Imei,settings.getString("CodeActiv",null),strLevelbat);
@@ -88,100 +88,143 @@ public class MetodosRequest {
 		   		//String urlCatLoc = new String("http://sharedpc.dnsalias.com:3001/location_points/near_location_points.json?"+json);
 		   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/location_points/near_location_points.json?alt=0.0&battery=50&code=CYS172827&id=AndCYS&imei=000000000000003&lat=-34.593968&lng=-58.413882&vel=0.0");
 		   		
-		   		Log.i(TAG, "[Handler] ENVIAR URL: "+urlCatLoc );		//DEBUG
+		   		Log.i(TAG, "[obtenerLocacionesCercanas] ENVIAR URL: "+urlCatLoc );		//DEBUG
 		        try
 		        {
-		        	objT = (RequestTask) new RequestTask().execute(urlCatLoc);
+		        	objT = (RequestTaskAsync) new RequestTaskAsync().execute(urlCatLoc);
 		        }catch(Exception ex)
 		        {
-		        	Log.i(TAG, "[Handler] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
+		        	Log.i(TAG, "[obtenerLocacionesCercanas] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
 		        	return null;
 		        }	      
-		    		    	
+		        this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio); 	
 		    	 if(objT.getResponse()==null)
 		    	 {
-		    		 Log.i(TAG, "[Handler] RESPONSE NULL");		//DEBUG
+		    		 Log.i(TAG, "[obtenerLocacionesCercanas] RESPONSE NULL");		//DEBUG
 		    	 }else		//////////////OBTUVE RESPUESTA DE ENVIO... CATEGORIAS ...
 		    	 {		    		    		 
-		    		 Log.i(TAG, "[Handler] RESPONSE : "+objT.getResponse());		//DEBUG
+		    		 Log.i(TAG, "[obtenerLocacionesCercanas] RESPONSE : "+objT.getResponse());		//DEBUG
 		    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		    		 ///TODO: CATEGORYLocation deberian ser dos clases, pero todavia no probe el gson para dos objetos uno dentro de otro FD v15.3.13
-	    			Collection<CategoryLocation> colcategorylocation =new ArrayList<CategoryLocation>();    			
-	    			CategoryLocation[] arrcategorylocation = gson.fromJson(objT.getResponse(), CategoryLocation[].class);
+	    			    			
+	    			Response_NearLoc nearlocat = gson.fromJson(objT.getResponse(), Response_NearLoc.class);
 	    			
-	    			if(arrcategorylocation.length>0)
-	    			{
-	    				int x=0;
-	    				while(x<arrcategorylocation.length)
-	    				{
-	    					colcategorylocation.add(arrcategorylocation[x]);	    					
-	    				}
-	    			}else
-	    			{
-	    				Log.i(TAG,"[Handler] NO HAY CATEGORIAS CERCA");
-	    				return null;
-	    			}		
-	    			
-	    			return colcategorylocation;
-	    			
+		    		if(nearlocat.getCode()==000)
+		    		{    				    			
+		    			return nearlocat.getCategoryPoints();
+		    		}
+		    		return null;	    			
 		    	 }
 			}else
 			{
-				Log.i(TAG, "[Handler] NO HAY COORDENADADS PARA ENVIAR ");		//DEBUG				
+				Log.i(TAG, "[obtenerLocacionesCercanas] NO HAY COORDENADADS PARA ENVIAR ");		//DEBUG				
 			}
 		}catch(Exception ex)
 		{
-			Log.e(TAG, "[Handler] Exploto todo: "+ex );		//DEBUG
+			Log.e(TAG, "[obtenerLocacionesCercanas] Exploto todo: "+ex );		//DEBUG
 		}
 		return null;
 	}
-	
-    public ArrayList<Category> actualizarCategoriasDisponibles()
+	/////////////////////////////////////////////////////////////////////////////////////////////////////7
+    public boolean updateLocation(Gps gpsloc)
     {
+    	try
+		{   
+			if((gpsloc!=null)&&((gpsloc.getLatitud()!=0)||(gpsloc.getLongitud()!=0)))
+			{
+				Log.i(TAG, "[updateLocation] HAY LATITUD Y/O LONGITUD");							//DEBUG
+		   			    			   	 
+		   		final Gson gson = new Gson();	    			   		
+		   		//Gps objGps=new Gps("AndCYS",dbLat,dbLon,dbAlt,flSpeed,Imei,settings.getString("CodeActiv",null),strLevelbat);
+		   		
+		   		Log.i(TAG,"DATOS GPS: "+gpsloc.getLatitud()+" "+gpsloc.getLongitud());
+		   		final String json = gson.toJson(gpsloc); 
+		   		
+		   		//String urlCatLoc = new String("http://192.168.252.129:3333/location_points/near_location_points.json?lat=-34.593968&lng=-58.413883");
+		   		//String urlCatLoc = new String("http://192.168.252.129:3333/location_points/near_location_points.json?"+json);
+		   		//String urlCatLoc = new String("http://sharedpc.dnsalias.com:3001/update_location/near_location_points.json?"+json);
+		   		String urlGPSupdate = new String(Definiciones.Definicionesgenerales.servidor+"/update_location/update_location.json?alt=0.0&battery=50&code=CYS172827&id=AndCYS&imei=000000000000003&lat=-34.593968&lng=-58.413882&vel=0.0");
+		   		
+		   		Log.i(TAG, "[updateLocation] ENVIAR URL: "+urlGPSupdate );		//DEBUG
+		        try
+		        {
+		        	objT = (RequestTaskAsync) new RequestTaskAsync().execute(urlGPSupdate);
+		        }catch(Exception ex)
+		        {
+		        	Log.i(TAG, "[updateLocation] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
+		        	return false;
+		        }	      
+		        this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);
+		    	 if(objT.getResponse()==null)
+		    	 {
+		    		 Log.i(TAG, "[updateLocation] RESPONSE NULL");		//DEBUG
+		    	 }else		//////////////OBTUVE RESPUESTA DE ENVIO... CATEGORIAS ...
+		    	 {		    		    		 
+		    		 Log.i(TAG, "[updateLocation] RESPONSE : "+objT.getResponse());		//DEBUG
+		    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		    		 ///TODO: CATEGORYLocation deberian ser dos clases, pero todavia no probe el gson para dos objetos uno dentro de otro FD v15.3.13
+		    		 
+		    		 ResponseClass.Response_Update_Loc responseupdate = gson.fromJson(objT.getResponse(), ResponseClass.Response_Update_Loc.class);
+	    				    			
+		    		 if(responseupdate.getCode()==000)
+		    		 {
+		    			 return true;
+		    		 }  			
+		    	 }
+			}else
+			{
+				Log.i(TAG, "[updateLocation] NO HAY COORDENADADS PARA ENVIAR ");		//DEBUG				
+			}
+		}catch(Exception ex)
+		{
+			Log.e(TAG, "[updateLocation] Exploto todo: "+ex );		//DEBUG
+		}
+		return false;
+	}
+   
+    
+    public ArrayList<String> actualizarCategoriasDisponibles(int imei,String strversion)
+    {
+    	RequestSync reqsync=new RequestSync();
     	try
 		{   
 		   		final Gson gson = new Gson();
 		   		//final String json = gson.toJson(gpsloc); 
-		   		
+		   		strversion="01.01";
 		   		//TODO ARMAR url de envio para actualizar
-		   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/location_points/near_location_points.json?alt=0.0&battery=50&code=CYS172827&id=AndCYS&imei=000000000000003&lat=-34.593968&lng=-58.413882&vel=0.0");
+		   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/categorias_disponibles/categorias_disponibles.json?Imei="+String.valueOf(imei)+"&vers="+strversion);
 		   		
-		   		Log.i(TAG, "[Handler] ENVIAR URL: "+urlCatLoc );		//DEBUG
+		   		Log.i(TAG, "[actualizarCategoriasDisponibles] ENVIAR URL: "+urlCatLoc );		//DEBUG
 		        try
 		        {
-		        	objT = (RequestTask) new RequestTask().execute(urlCatLoc);
+		        	objT = (RequestTaskAsync) new RequestTaskAsync().execute(urlCatLoc);
+		        	
+		        	//reqsync.Request(urlCatLoc);
 		        }catch(Exception ex)
 		        {
-		        	Log.i(TAG, "[Handler] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
+		        	Log.i(TAG, "[actualizarCategoriasDisponibles] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
 		        	return null;
 		        }	      
-		    		    	
+		         this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	
 		    	 if(objT.getResponse()==null)
+		       //  if(reqsync.Request(urlCatLoc)==null)
 		    	 {
-		    		 Log.i(TAG, "[Handler] RESPONSE NULL");		//DEBUG
+		    		 Log.i(TAG, "[actualizarCategoriasDisponibles] RESPONSE NULL");		//DEBUG
+		    		 return null;
 		    	 }else		//////////////OBTUVE RESPUESTA DE ENVIO... CATEGORIAS ...
 		    	 {		    		    		 
-		    		 Log.i(TAG, "[Handler] RESPONSE : "+objT.getResponse());		//DEBUG
+		    		 Log.i(TAG, "[actualizarCategoriasDisponibles] RESPONSE : "+objT.getResponse());		//DEBUG
 		    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		    		 ///TODO: CATEGORYLocation deberian ser dos clases, pero todavia no probe el gson para dos objetos uno dentro de otro FD v15.3.13
-	    			ArrayList<Category> arrlistcategory =new ArrayList<Category>();    			
-	    			Category[] categorias = gson.fromJson(objT.getResponse(), Category[].class);
+		    		 ///TODO: Corregir	    			    			
+	    			Response_CategoryUpdate categorias = gson.fromJson(objT.getResponse(), Response_CategoryUpdate.class);
 	    			
-	    			if(categorias.length>0)
+	    			if(categorias.getCode()==000)
 	    			{
-	    				int x=0;
-	    				while(x<categorias.length)
-	    				{
-	    					arrlistcategory.add(categorias[x]);	    					
-	    				}
+	    				return categorias.getCategory();
 	    			}else
 	    			{
-	    				Log.i(TAG,"[Handler] NO HAY CATEGORIAS CERCA");
-	    				return null;
-	    			}		
-	    			
-	    			return arrlistcategory;
-	    			
+	    				Log.i(TAG,"[actualizarCategoriasDisponibles] NO HAY CATEGORIAS DISPONIBLES");	    				
+	    			}	    			
 		    	 }			
 		}catch(Exception ex)
 		{
@@ -191,27 +234,21 @@ public class MetodosRequest {
 	}
 	
     
-	public class userLogged 
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+	public boolean waitResponse(int inseconds)
 	{
-		public userLogged()
-		{}
-		int inState;
-		public int getUserLogged()
-		{
-			return this.inState;
-		}
+		new CountDownTimer(inseconds*1000, 1000) {
+		     public void onTick(long millisUntilFinished) {			    		         
+		         Log.i(TAG, "[waitResponse] ONTICK: "+millisUntilFinished/1000);		//DEBUG
+		     }
+		     public void onFinish() {
+		    	 Log.i(TAG, "[waitResponse] TIMER DONE");		//DEBUG
+		    	 
+		     }
+		  }.start();
+		  
+		  return true;
 	}
-	public class responseYesOrNot
-	{
-		public responseYesOrNot()
-		{}
-		int inState;
-		public int getResponseYesOrNot()
-		{
-			return this.inState;
-		}
-	}
-	
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////7
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +263,7 @@ public class MetodosRequest {
    		Log.i(TAG, "[verificarUseryPass] ENVIAR URL: "+urlCatLoc );		//DEBUG
         try
         {
-        	objT = (RequestTask) new RequestTask().execute(urlCatLoc);
+        	objT = (RequestTaskAsync) new RequestTaskAsync().execute(urlCatLoc);
         }catch(Exception ex)
         {
         	Log.i(TAG, "[Handler] REQUEST EXCEPTION: "+ex );		//DEBUG
@@ -256,18 +293,16 @@ public class MetodosRequest {
     		    		 Log.i(TAG, "[verificarUseryPass] RESPONSE : "+objT.getResponse());		//DEBUG
     		    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     		    		
-    		    		 responseYesOrNot objresponseyesornot=gson.fromJson(objT.getResponse(), responseYesOrNot.class);
+    		    		 Response_YesOrNot objresponseyesornot=gson.fromJson(objT.getResponse(), Response_YesOrNot.class);
 						
-		    			if(objresponseyesornot.getResponseYesOrNot()==1) //LOGUEADO		    				
+		    			if(objresponseyesornot.getCode()==000) //LOGUEADO		    				
 		    			{
 		    				boresponse=true;
 		    			}else	//NO LOGUEADO
 		    			{
 		    				boresponse=false;
-		    			}	    		    			
-		    			
-    		    	 }
-    		    	 
+		    			}
+    		    	 }    		    	 
     		     }
     		  }.start();
 
