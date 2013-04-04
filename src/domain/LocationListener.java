@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -21,7 +22,7 @@ public class LocationListener implements android.location.LocationListener
 	private TelephonyManager mTelephoneManager = null;
 	private Context mcontext;
 	private String strLevelbat;
-	
+	private boolean coordenadagps;
 	public TelephonyManager getTelMgr()
 	{
 		return this.mTelephoneManager;
@@ -30,15 +31,48 @@ public class LocationListener implements android.location.LocationListener
 	{
 		return this.mLocationManager;
 	}
-     public LocationListener(String provider,Gps gps,Context mcontext)
+     //public LocationListener(String provider,Gps gps,Context mcontext)
+	public LocationListener(Context mcontext)
     {
+		 this.setBatteryLevel(null);
     	 this.mcontext=mcontext;
-    	 this.gps=gps;
+    	 this.setGpsNew();        
+      //  mLastLocation = new Location(provider);
+    	 coordenadagps=false;
+    	 initializeLocationManager();	//Pruebo de llamarlo desde aca.
+        
+    }
+	public LocationListener(String provider,Context mcontext)
+    {
+		this.setBatteryLevel(null);
+    	 this.mcontext=mcontext;
+    	 this.setGpsNew();
+    	// this.gps=gps;
         Log.i(TAG, "[LocationListener] LocationListener Provider " + provider);				//DEBUG
       //  mLastLocation = new Location(provider);
         initializeLocationManager();	//Pruebo de llamarlo desde aca.
     }
-		     
+	public void setGpsNew()
+	{
+		this.gps=new Gps();
+	}
+	public Gps getGpsLoc()
+	{
+		return this.gps;
+	}
+	public void setBatteryLevel(String strBattery)
+	{
+		this.strLevelbat=strBattery;
+	}
+	public String getBatteryLevel()
+	{
+		return this.strLevelbat;
+	}
+	public void setContext(Context context)
+	{
+		this.mcontext=context;
+	}
+	
 		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		public void initializeLocationManager() 
 		{
@@ -74,6 +108,8 @@ public class LocationListener implements android.location.LocationListener
 				   		 dbAlt=location.getAltitude();
 				   		 flSpeed=location.getSpeed();				   		 
 				   		 */
+				   		//gps=new Gps();
+				   		gps.setBattery(this.getBatteryLevel());
 				   		gps.setLat(location.getLatitude());
 				   		 gps.setLong(location.getLongitude());
 				   		 gps.setAltit(location.getAltitude());
@@ -152,8 +188,7 @@ public class LocationListener implements android.location.LocationListener
 				    			mLocationListeners);
 			    	}
 			    	Log.i(TAG, "[startLocationListenerNet] Pase REQUEST_LOCATION_UPDATES");		//DEBUG    	
-			        
-			    	gps.setBattery(strbatteryLevel());        
+			    
 			        //gpsnews = mLocationListeners[1].getTelMgr().getDeviceId();
 			        
 			        
@@ -162,26 +197,38 @@ public class LocationListener implements android.location.LocationListener
 			    } catch (IllegalArgumentException ex) {
 			        Log.e(TAG, "[startLocationListenerNet] network provider does not exist, " + ex.getMessage());		//DEBUG        
 			    }
+			    //////////////////////////////// BATTERY LEVEL /////////////////////////////
+			   try
+			   {
+				    if(getBatteryLevel()==null)
+			        {
+			        	gps.setBattery(batteryLevel());
+			        }
+				    Log.i(TAG, "[startLocationListenerNet] BATTERY str: " + this.getBatteryLevel());			//DEBUG
+			   } catch(Exception e)
+			    {
+			    	Log.i(TAG,"[startLocationListenerGps] Erro Battery Exception: "+e);
+			    }
 			    
 			    ///////////////////////////// TIMER //////////////////////////
 			       try
 					{
-			        	Log.i("HTService","[startUpdateCoordinates] Durmiendo el tiempo configurado TIME: "+settings.getInt("Timer",2));
+			        	Log.i(TAG,"[startLocationListenerNet] Durmiendo el tiempo configurado TIME: "+settings.getInt("Timer",2));
 						Thread.sleep(settings.getInt("Timer",2)*1000,0);
 					}
 					catch (InterruptedException e)
 					{
-						Log.e("HTService","SLEEP ERROR: "+e);
+						Log.e(TAG,"[startLocationListenerNet]SLEEP ERROR: "+e);
 					}
 		}
 		
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		public void startLocationListenerGps(int inTiempoEnvio,LocationListener mLocationListeners)
 		{
-			SharedPreferences settings = mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
 			final int LOCATION_INTERVAL = 10000;
-			//private static final float LOCATION_DISTANCE = 5.0f;
-			final float LOCATION_DISTANCE = 0;	
-			
+			final float LOCATION_DISTANCE = 0;
+			SharedPreferences settings = mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
+						
 			  /////////////////////////////////////////////////////////////////////////
 			    try {
 			        
@@ -193,64 +240,198 @@ public class LocationListener implements android.location.LocationListener
 			    	{
 			    		mLocationListeners.getLocMgr().requestLocationUpdates(LocationManager.GPS_PROVIDER,2, LOCATION_DISTANCE,mLocationListeners);
 			    	}
-			    	Log.d(TAG, "[startLocationListenerGps] Pase REQUEST_LOCATION_UPDATES 2 DOS");		//DEBUG
+			    	Log.d(TAG, "[startLocationListenerGps] Pase REQUEST_LOCATION_UPDATES GPS");		//DEBUG
 			    	
 			        
 			    	//Imei = mLocationListeners[1].getTelMgr().getDeviceId();      
-			        gps.setBattery(strbatteryLevel());
 			        
 			    } catch (java.lang.SecurityException ex) {
 			        Log.i(TAG, "[startLocationListenerGps] fail to request location update, ignore", ex);			//DEBUG
 			    } catch (IllegalArgumentException ex) {
 			        Log.d(TAG, "[startLocationListenerGps] gps provider does not exist " + ex.getMessage());			//DEBUG
 			    }
-			    
+			    ///////////////////////////////// Battery level ///////////////////////////
+			   try
+			   {
+				    if(this.getBatteryLevel()==null)
+			        {
+			        	gps.setBattery(batteryLevel());
+			        }
+				    Log.i(TAG, "[startLocationListenerGps] BATTERY str: " + this.getBatteryLevel());			//DEBUG
+			   }catch(Exception e)
+			    {
+			    	Log.i(TAG,"[startLocationListenerGps] Erro Battery Exception: "+e);
+			    }
 			    ///////////////////////////// TIMER //////////////////////////
 			       try
 					{
-			        	Log.i("HTService","[startLocationListenerGps] Durmiendo el tiempo configurado TIME: "+settings.getInt("Timer",2));
+			        	Log.i(TAG,"[startLocationListenerGps] Durmiendo el tiempo configurado TIME: "+settings.getInt("Timer",2));
 						Thread.sleep(settings.getInt("Timer",2)*1000,0);
 					}
 					catch (InterruptedException e)
 					{
-						Log.i("HTService","SLEEP ERROR: "+e);
+						Log.i(TAG,"[startLocationListenerGps]SLEEP ERROR: "+e);
 					}
 		}
 		
+		
+		/////////////////////////////////////////////////////////////////////////////////////////
+
+		public Gps startUpdateCoordinates()
+		{		
+			 SharedPreferences settings = this.mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
+			 SharedPreferences.Editor editor= settings.edit();
+			 editor.putInt("Timer",1);
+			 editor.commit();
+			Log.i(TAG, "[startUpdateCoordinates] startUpdateCoordinates");									//DEBUG
+			try
+			{	
+				
+				 LocationListener[] mLocationListeners = new LocationListener[] 
+				 {  						 
+					new LocationListener(LocationManager.GPS_PROVIDER,this.mcontext),
+			        new LocationListener(LocationManager.NETWORK_PROVIDER,this.mcontext)
+				};
+				 Log.i(TAG, "[startUpdateCoordinates] TIEMPO DE SLEEP: "+settings.getInt("Timer",2));				//DEBUG
+				 mLocationListeners[0].startLocationListenerNet(settings.getInt("Timer",2),mLocationListeners[0]);	//TIEMPO
+				 Log.d(TAG, "[startUpdateCoordinates] PASE LOCATION NET");				//DEBUG
+				 mLocationListeners[1].startLocationListenerGps(settings.getInt("Timer",2),mLocationListeners[1]);	//TIEMPO
+				 Log.d(TAG, "[startUpdateCoordinates] PASE LOCATION GPS");				//DEBUG
+				 
+			}catch(Exception Ex)
+			{
+				Log.e(TAG, "[startUpdateCoordinates] ERROR: "+Ex);									//DEBUG
+				Log.e(TAG, "[startUpdateCoordinates] ERROR 1: "+Ex.getCause());									//DEBUG
+				return null;	
+			}
+			
+			
+			GetGPSDataState asyncgps=new GetGPSDataState();
+			 Log.i(TAG, "[startUpdateCoordinates] Pase Asignación GETGPS ");									//DEBUG
+			 try
+			 {
+				 asyncgps.execute("");
+				 Log.i(TAG, "[startUpdateCoordinates] Pase Execute ");									//DEBUG
+			 }catch(Exception ex)
+			 {
+				 Log.e(TAG, "[startUpdateCoordinates] Error Exception: "+ex);									//DEBUG
+			 }
+			
+			/*try
+			{
+				 while((gps.getLatitud()==0)&&(gps.getLongitud()==0))
+				{
+					Log.i(TAG, "[startUpdateCoordinates] While wating gps");									//DEBUG}
+					try
+					{
+						Thread.sleep(500);
+					}catch(Exception e)
+					{
+						Log.e(TAG, "[startUpdateCoordinates] Exception while sleep: "+e);									//DEBUG}
+					}
+				}
+			}catch(Exception e)
+			{
+				Log.e(TAG, "[startUpdateCoordinates] Exception while: "+e);									//DEBUG}
+			}
+			*/
+			 try
+			 {
+				 while(!coordenadagps)
+				 {
+				
+						 	Log.i(TAG, "[startUpdateCoordinates] COORDENADAS GPS NULL - vuelvo a enviar");									//DEBUG}
+							Thread.sleep(500);
+				 }
+			 }catch(Exception e)
+			 {
+				 Log.e(TAG, "[startUpdateCoordinates] Exception while sleep: "+e);									//DEBUG}
+			 } 
+			 
+			 Log.i(TAG, "[startUpdateCoordinates] return  gps");									//DEBUG}
+			 return gps;
+		}
+		
+		////////////////////////////////////////////////////////////////////////
+
+		public class GetGPSDataState extends AsyncTask<String, Void, String>	
+		{
+			@Override
+			protected String doInBackground(String... params) 
+			{											
+				 
+				Log.i(TAG, "[doInBackground] GetGPSData");									//DEBUG
+				try
+				{
+					while((gps.getLatitud()==0)&&(gps.getLongitud()==0))
+					{
+						Log.i(TAG, "[doInBackground] While wating gps");									//DEBUG}
+						try
+						{
+							Thread.sleep(500);
+						}catch(Exception e)
+						{
+							Log.e(TAG, "[doInBackground] Exception sleep: "+e);									//DEBUG}
+						}
+					}
+				}catch(Exception e)
+				{
+					Log.i(TAG, "[doInBackground] Exception while  async: "+e);									//DEBUG}
+					return null;
+				}
+				Log.i(TAG, "[doInBackground] return");	
+				return "OK";
+			}	
+			
+			 @SuppressWarnings("unused")
+			protected void onPostExecute(Long result) {
+		         coordenadagps=true;
+		     }
+			 
+		}
+		
+		
+
+		
 ////////////////////////////////////////////////BATTERY &////////////////////////////////////////
-	public String strbatteryLevel() {
+	public String batteryLevel() {
 	
+		try
+		{
+			BroadcastReceiver batteryLevelReceiver = new BroadcastReceiver() {
+			
+			@Override
+			public void onReceive(Context context, Intent intent) {
+			
+				context.unregisterReceiver(this);
+				
+				int rawlevel = intent.getIntExtra("level", -1);
+				
+				int scale = intent.getIntExtra("scale", -1);
+				
+				int levelbat = -1;
+				
+				if (rawlevel >= 0 && scale > 0) {
+				
+				levelbat = (rawlevel * 100) / scale;
+				
+				}
+				//Log.i(TAG, "[strbatteryLevel] BATTERY int: " + levelbat);
+				setBatteryLevel(String.valueOf(levelbat));
+				//Log.i(TAG, "[strbatteryLevel] BATTERY str: " + strLevelbat);			//DEBUG	
+				}
+				
+			};
+			IntentFilter batteryLevelFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);    	
+			mcontext.registerReceiver(batteryLevelReceiver, batteryLevelFilter);
+			Log.i(TAG, "[strbatteryLevel] BATTERY str final: " + getBatteryLevel());	
+			
+		}catch(Exception e)
+		{
+			Log.i(TAG, "[strbatteryLevel] BATTERY EXCEPTION: "+e);
+		}
 		
-		BroadcastReceiver batteryLevelReceiver = new BroadcastReceiver() {
-		
-		@Override
-		public void onReceive(Context context, Intent intent) {
-		
-			context.unregisterReceiver(this);
-			
-			int rawlevel = intent.getIntExtra("level", -1);
-			
-			int scale = intent.getIntExtra("scale", -1);
-			
-			int levelbat = -1;
-			
-			if (rawlevel >= 0 && scale > 0) {
-			
-			levelbat = (rawlevel * 100) / scale;
-			
-			}
-			//Log.i(TAG, "[strbatteryLevel] BATTERY int: " + levelbat);
-			strLevelbat=String.valueOf(levelbat);
-			Log.i(TAG, "[strbatteryLevel] BATTERY str: " + strLevelbat);	
-			}
-			
-		};
-		
-		IntentFilter batteryLevelFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);    	
-		mcontext.registerReceiver(batteryLevelReceiver, batteryLevelFilter);
-		Log.i(TAG, "[strbatteryLevel] BATTERY str final: " + strLevelbat);	
-		
-		return strLevelbat;
+		return getBatteryLevel();
 	}	
 
 } 

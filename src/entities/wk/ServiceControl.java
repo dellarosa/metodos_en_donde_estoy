@@ -84,7 +84,7 @@ public class ServiceControl extends Activity  implements Runnable
 	     @Override
 		public void handleMessage(android.os.Message msg) {
         	
-        	startUpdateCoordinates();
+        	//startUpdateCoordinates();
         		   		
         	Button btMinimizes = (Button) findViewById(R.id.btMinimizar);
     	    
@@ -141,31 +141,6 @@ public class ServiceControl extends Activity  implements Runnable
 		 currentThread.start();		 		
 	}
 	
-	
-	public boolean startUpdateCoordinates()
-	{		
-		 SharedPreferences settings = getSharedPreferences("HT",MODE_PRIVATE);
-	
-   	
-		Log.e(TAG, "[startUpdateCoordinates] startUpdateCoordinates");									//DEBUG
-		try
-		{	
-			voSetView();
-			 LocationListener[] mLocationListeners = new LocationListener[] 
-			 {  						 
-				new LocationListener(LocationManager.GPS_PROVIDER,gpsnews,this),
-		        new LocationListener(LocationManager.NETWORK_PROVIDER,gpsnews,this)
-			};
-			 mLocationListeners[0].startLocationListenerNet(Integer.valueOf(settings.getString("Timer",null)),mLocationListeners[0]);	//TIEMPO
-			 mLocationListeners[1].startLocationListenerGps(Integer.valueOf(settings.getString("Timer",null)),mLocationListeners[1]);	//TIEMPO
-			 
-		}catch(Exception Ex)
-		{
-			Log.e(TAG, "[startUpdateCoordinates] ERROR: "+Ex);									//DEBUG
-			return false;	
-		}
-		 return true;
-	}
 	
 	///////////////////////////////////////////////////// Set View //////////////////////////////
 	public void voSetView()

@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import domain.CategoryPoints;
 import domain.Gps;
 import domain.LocationListener;
+import domain.LocationListener.GetGPSDataState;
 import entities.wk.ServiceNear;
 
 import android.app.Activity;
@@ -59,7 +60,7 @@ public class ServiceNear extends Activity
 	RequestTaskAsync objT;
 	boolean flagNewLocation;
 	Gps gpsnews=new Gps();
-	GetGPSData asyncgps;
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public ServiceNear()
@@ -72,22 +73,27 @@ public class ServiceNear extends Activity
 		Log.i(TAG, "[onCreate] onCreate");		
 		 super.onCreate(savedInstanceState);
 		 voSetView();
-		 this.startUpdateCoordinates();
-		 Log.i(TAG, "[onCreate] Pase StartUPdateCoord: ");									//DEBUG
-		// currentThread.start();
-		 asyncgps=new GetGPSData();
-		 try
+		 LocationListener listenerloc= new LocationListener(this);
+		 
+		 //LocationListener.GetGPSDataState gpsstate=(GetGPSDataState) new LocationListener.GetGPSDataState().execute("");
+		 //gpsstate.isCancelled();
+		 
+		 try{
+			 listenerloc.setContext(getApplicationContext());		//Rvisar contexto			 
+			 gpsnews=listenerloc.startUpdateCoordinates();			 
+			 Log.i(TAG, "[onCreate] Pase StartUPdateCoord: GPS DATA "+gpsnews.getAltitud());									//DEBUG	 
+		 }catch(Exception e)
 		 {
-			 asyncgps.execute("");
-		 }catch(Exception ex)
-		 {
-			 Log.e(TAG, "[onCreate] Error Exception: "+ex);									//DEBUG
+			 Log.e(TAG, "[onCreate] Exception: "+e);									//DEBUG
 		 }
 		 
+		// currentThread.start();
+		
 		 
 		 
 		 
-		 Button btMinimizes = (Button) findViewById(R.id.btMinimizar);    
+		 
+		 Button btMinimizes = (Button) findViewById(R.id.btMinimizarNear);    
 			btMinimizes.setOnClickListener(new OnClickListener()
 		    {     
 				public void onClick(View v) 
@@ -103,62 +109,6 @@ public class ServiceNear extends Activity
 	}	
 	
 	
-	private class GetGPSData extends AsyncTask<String, Void, String>	
-	{
-		@Override
-		protected String doInBackground(String... params) 
-		{
-			
-			Log.i(TAG, "[GetGPSData] GetGPSData");									//DEBUG
-			
-			
-			if(gpsnews.getLatitud()==0)
-			{}else
-			{
-				Log.i(TAG, "[GetGPSData] GetGPSData OK");									//DEBUG}
-			}
-			try
-			{
-				Thread.sleep(1000);
-			}catch(Exception ex)
-			{
-				Log.i(TAG, "[GetGPSData] Exception Sleep: "+ex);									//DEBUG}
-			}
-			
-			
-			return "OK";	
-		}		
-	}
-	
-	
-
-	
-	public boolean startUpdateCoordinates()
-	{		
-		 SharedPreferences settings = getSharedPreferences("Timer",MODE_PRIVATE);
-		 SharedPreferences.Editor editor= settings.edit();
-		 editor.putInt("Timer",1);
-		 editor.commit();
-		Log.i(TAG, "[startUpdateCoordinates] startUpdateCoordinates");									//DEBUG
-		try
-		{	
-			
-			 LocationListener[] mLocationListeners = new LocationListener[] 
-			 {  						 
-				new LocationListener(LocationManager.GPS_PROVIDER,gpsnews,this),
-		        new LocationListener(LocationManager.NETWORK_PROVIDER,gpsnews,this)
-			};
-			 Log.i(TAG, "[initializeLocationManager] TIEMPO DE SLEEP: "+settings.getInt("Timer",2));				//DEBUG
-			 mLocationListeners[0].startLocationListenerNet(settings.getInt("Timer",2),mLocationListeners[0]);	//TIEMPO
-			 mLocationListeners[1].startLocationListenerGps(settings.getInt("Timer",2),mLocationListeners[1]);	//TIEMPO
-			 
-		}catch(Exception Ex)
-		{
-			Log.e(TAG, "[startUpdateCoordinates] ERROR: "+Ex);									//DEBUG
-			return false;	
-		}
-		 return true;
-	}
 	
 	///////////////////////////////////////////////////// Set View //////////////////////////////
 	public void voSetView()
