@@ -59,13 +59,21 @@ public class ServiceNear extends Activity
 	boolean TimerState=false; 
 	RequestTaskAsync objT;
 	boolean flagNewLocation;
-	Gps gpsnews=new Gps();
-	
+	//Gps gpsnews=new Gps();
+	Gps gpsnews;
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public ServiceNear()
 	{
-		gpsnews=new Gps();
+		this.gpsnews=new Gps();
+	}
+	public Gps getGpsnews()
+	{
+		return this.gpsnews;
+	}
+	public void setGpsnews(Gps gpsn)
+	{
+		this.gpsnews=gpsn;
 	}
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -80,7 +88,7 @@ public class ServiceNear extends Activity
 		 
 		 try{
 			 listenerloc.setContext(getApplicationContext());		//Rvisar contexto			 
-			 gpsnews=listenerloc.startUpdateCoordinates();			 
+			 gpsnews=listenerloc.startUpdateCoordinates(this.getGpsnews());			 
 			 Log.i(TAG, "[onCreate] Pase StartUPdateCoord: GPS DATA "+gpsnews.getAltitud());									//DEBUG	 
 		 }catch(Exception e)
 		 {
