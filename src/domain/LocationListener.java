@@ -42,16 +42,20 @@ public class LocationListener implements android.location.LocationListener
     	 initializeLocationManager();	//Pruebo de llamarlo desde aca.
         
     }
-	public LocationListener(String provider,Context mcontext)
+	public LocationListener(String provider,Context mcontext,Gps gpsn)
     {
 		this.setBatteryLevel(null);
     	 this.mcontext=mcontext;
-    	 this.setGpsNew();
-    	// this.gps=gps;
+    	 //this.setGpsNew();
+    	 this.gps=gpsn;
         Log.i(TAG, "[LocationListener] LocationListener Provider " + provider);				//DEBUG
       //  mLastLocation = new Location(provider);
         initializeLocationManager();	//Pruebo de llamarlo desde aca.
     }
+	public void setGps(Gps gps)
+	{
+		this.gps=gps;
+	}
 	public void setGpsNew()
 	{
 		this.gps=new Gps();
@@ -109,11 +113,11 @@ public class LocationListener implements android.location.LocationListener
 				   		 flSpeed=location.getSpeed();				   		 
 				   		 */
 				   		//gps=new Gps();
-				   		gps.setBattery(this.getBatteryLevel());
-				   		gps.setLat(location.getLatitude());
-				   		 gps.setLong(location.getLongitude());
-				   		 gps.setAltit(location.getAltitude());
-				   		 gps.setVeloc(location.getSpeed());
+				   		this.getGpsLoc().setBattery(this.getBatteryLevel());
+				   		this.getGpsLoc().setLat(location.getLatitude());
+				   		this.getGpsLoc().setLong(location.getLongitude());
+				   		this.getGpsLoc().setAltit(location.getAltitude());
+				   		this.getGpsLoc().setVeloc(location.getSpeed());
 				   		
 				   		
 	    }
@@ -267,8 +271,9 @@ public class LocationListener implements android.location.LocationListener
 		
 		/////////////////////////////////////////////////////////////////////////////////////////
 
-		public Gps startUpdateCoordinates()
+		public Gps startUpdateCoordinates(Gps gpstofill)
 		{		
+			//setGps(gpstofill);
 			 SharedPreferences settings = this.mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
 			 SharedPreferences.Editor editor= settings.edit();
 			 editor.putInt("Timer",1);
@@ -279,13 +284,13 @@ public class LocationListener implements android.location.LocationListener
 				
 				 LocationListener[] mLocationListeners = new LocationListener[] 
 				 {  						 
-					new LocationListener(LocationManager.GPS_PROVIDER,this.mcontext),
-			        new LocationListener(LocationManager.NETWORK_PROVIDER,this.mcontext)
+						 new LocationListener(LocationManager.NETWORK_PROVIDER,this.mcontext,gpstofill),			        
+					     new LocationListener(LocationManager.GPS_PROVIDER,this.mcontext,gpstofill)
 				};
 				 Log.i(TAG, "[startUpdateCoordinates] TIEMPO DE SLEEP: "+settings.getInt("Timer",2));				//DEBUG
-				 mLocationListeners[1].startLocationListenerNet(settings.getInt("Timer",2),mLocationListeners[1]);	//TIEMPO
+				 //mLocationListeners[0].startLocationListenerNet(settings.getInt("Timer",2),mLocationListeners[0]);	//TIEMPO
 				 Log.d(TAG, "[startUpdateCoordinates] PASE LOCATION NET");				//DEBUG
-				 mLocationListeners[0].startLocationListenerGps(settings.getInt("Timer",2),mLocationListeners[0]);	//TIEMPO
+				 mLocationListeners[1].startLocationListenerGps(settings.getInt("Timer",2),mLocationListeners[1]);	//TIEMPO
 				 Log.d(TAG, "[startUpdateCoordinates] PASE LOCATION GPS");				//DEBUG
 				 
 			}catch(Exception Ex)
@@ -296,18 +301,28 @@ public class LocationListener implements android.location.LocationListener
 			}
 			
 			
+			/*	//Con metodo asincronico // 
 			GetGPSDataState asyncgps=new GetGPSDataState();
 			 Log.i(TAG, "[startUpdateCoordinates] Pase Asignación GETGPS ");									//DEBUG
 			 try
 			 {
-				 //asyncgps.execute("");
+				 asyncgps.execute("");
 				 Log.i(TAG, "[startUpdateCoordinates] Pase Execute ");									//DEBUG
 			 }catch(Exception ex)
 			 {
 				 Log.e(TAG, "[startUpdateCoordinates] Error Exception: "+ex);									//DEBUG
 			 }
 			
-			try
+			 try
+				{
+					Thread.sleep(3000);
+				}catch(Exception e)
+				{
+					Log.e(TAG, "[startUpdateCoordinates] Exception while sleep: "+e);									//DEBUG}
+				}
+				
+			*/	
+			/*try
 			{
 				 while((gps.getLatitud()==0)&&(gps.getLongitud()==0))
 				{
@@ -324,22 +339,23 @@ public class LocationListener implements android.location.LocationListener
 			{
 				Log.e(TAG, "[startUpdateCoordinates] Exception while: "+e);									//DEBUG}
 			}
-			
-			 /*try
+			*/
+			/* try
 			 {
 				 while(!coordenadagps)
 				 {
 				
 						 	Log.i(TAG, "[startUpdateCoordinates] COORDENADAS GPS NULL - vuelvo a enviar");									//DEBUG}
-							Thread.sleep(500);
+							Thread.sleep(4000);
 				 }
 			 }catch(Exception e)
 			 {
 				 Log.e(TAG, "[startUpdateCoordinates] Exception while sleep: "+e);									//DEBUG}
 			 } 
-			 */
+			 
 			 Log.i(TAG, "[startUpdateCoordinates] return  gps");									//DEBUG}
-			 return gps;
+			 */
+			 return this.getGpsLoc();
 		}
 		
 		////////////////////////////////////////////////////////////////////////
@@ -358,7 +374,7 @@ public class LocationListener implements android.location.LocationListener
 						Log.i(TAG, "[doInBackground] While wating gps");									//DEBUG}
 						try
 						{
-							Thread.sleep(1500);
+							Thread.sleep(100);
 						}catch(Exception e)
 						{
 							Log.e(TAG, "[doInBackground] Exception sleep: "+e);									//DEBUG}
