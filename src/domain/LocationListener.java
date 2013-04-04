@@ -174,24 +174,14 @@ public class LocationListener implements android.location.LocationListener
 			    	
 			    	if((inTiempoEnvio!=0))
 			    	{
-			    		Log.i(TAG, "[startLocationListenerNet] inTiempoEnvio Net: "+inTiempoEnvio);		//DEBUG
-			    		
-						
-						 
-			    		mLocationListeners.getLocMgr().requestLocationUpdates(LocationManager.NETWORK_PROVIDER, inTiempoEnvio, LOCATION_DISTANCE,
-			    				mLocationListeners);
-			    				//locationlistener);
+			    		Log.i(TAG, "[startLocationListenerNet] inTiempoEnvio Net: "+inTiempoEnvio);		//DEBUG			    		
+			    		mLocationListeners.getLocMgr().requestLocationUpdates(LocationManager.NETWORK_PROVIDER, inTiempoEnvio, LOCATION_DISTANCE,mLocationListeners);
 			    	}else
 			    	{
-			    		mLocationListeners.getLocMgr().requestLocationUpdates(LocationManager.NETWORK_PROVIDER,2, LOCATION_DISTANCE,
-			    				//locationlistener);
-				    			mLocationListeners);
+			    		mLocationListeners.getLocMgr().requestLocationUpdates(LocationManager.NETWORK_PROVIDER,2, LOCATION_DISTANCE,mLocationListeners);
 			    	}
-			    	Log.i(TAG, "[startLocationListenerNet] Pase REQUEST_LOCATION_UPDATES");		//DEBUG    	
-			    
+			    	Log.i(TAG, "[startLocationListenerNet] Pase REQUEST_LOCATION_UPDATES");		//DEBUG
 			        //gpsnews = mLocationListeners[1].getTelMgr().getDeviceId();
-			        
-			        
 			    } catch (java.lang.SecurityException ex) {
 			        Log.e(TAG, "[startLocationListenerNet] fail to request location update, ignore", ex);		//DEBUG
 			    } catch (IllegalArgumentException ex) {
@@ -293,9 +283,9 @@ public class LocationListener implements android.location.LocationListener
 			        new LocationListener(LocationManager.NETWORK_PROVIDER,this.mcontext)
 				};
 				 Log.i(TAG, "[startUpdateCoordinates] TIEMPO DE SLEEP: "+settings.getInt("Timer",2));				//DEBUG
-				 mLocationListeners[0].startLocationListenerNet(settings.getInt("Timer",2),mLocationListeners[0]);	//TIEMPO
+				 mLocationListeners[1].startLocationListenerNet(settings.getInt("Timer",2),mLocationListeners[1]);	//TIEMPO
 				 Log.d(TAG, "[startUpdateCoordinates] PASE LOCATION NET");				//DEBUG
-				 mLocationListeners[1].startLocationListenerGps(settings.getInt("Timer",2),mLocationListeners[1]);	//TIEMPO
+				 mLocationListeners[0].startLocationListenerGps(settings.getInt("Timer",2),mLocationListeners[0]);	//TIEMPO
 				 Log.d(TAG, "[startUpdateCoordinates] PASE LOCATION GPS");				//DEBUG
 				 
 			}catch(Exception Ex)
@@ -310,21 +300,21 @@ public class LocationListener implements android.location.LocationListener
 			 Log.i(TAG, "[startUpdateCoordinates] Pase Asignación GETGPS ");									//DEBUG
 			 try
 			 {
-				 asyncgps.execute("");
+				 //asyncgps.execute("");
 				 Log.i(TAG, "[startUpdateCoordinates] Pase Execute ");									//DEBUG
 			 }catch(Exception ex)
 			 {
 				 Log.e(TAG, "[startUpdateCoordinates] Error Exception: "+ex);									//DEBUG
 			 }
 			
-			/*try
+			try
 			{
 				 while((gps.getLatitud()==0)&&(gps.getLongitud()==0))
 				{
 					Log.i(TAG, "[startUpdateCoordinates] While wating gps");									//DEBUG}
 					try
 					{
-						Thread.sleep(500);
+						Thread.sleep(1500);
 					}catch(Exception e)
 					{
 						Log.e(TAG, "[startUpdateCoordinates] Exception while sleep: "+e);									//DEBUG}
@@ -334,8 +324,8 @@ public class LocationListener implements android.location.LocationListener
 			{
 				Log.e(TAG, "[startUpdateCoordinates] Exception while: "+e);									//DEBUG}
 			}
-			*/
-			 try
+			
+			 /*try
 			 {
 				 while(!coordenadagps)
 				 {
@@ -347,7 +337,7 @@ public class LocationListener implements android.location.LocationListener
 			 {
 				 Log.e(TAG, "[startUpdateCoordinates] Exception while sleep: "+e);									//DEBUG}
 			 } 
-			 
+			 */
 			 Log.i(TAG, "[startUpdateCoordinates] return  gps");									//DEBUG}
 			 return gps;
 		}
@@ -368,7 +358,7 @@ public class LocationListener implements android.location.LocationListener
 						Log.i(TAG, "[doInBackground] While wating gps");									//DEBUG}
 						try
 						{
-							Thread.sleep(500);
+							Thread.sleep(1500);
 						}catch(Exception e)
 						{
 							Log.e(TAG, "[doInBackground] Exception sleep: "+e);									//DEBUG}
