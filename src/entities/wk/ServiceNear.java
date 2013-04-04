@@ -73,11 +73,16 @@ public class ServiceNear extends Activity
 		 super.onCreate(savedInstanceState);
 		 voSetView();
 		 this.startUpdateCoordinates();
-		 Log.i(TAG, "[onCreate] StartUPdateCoord: ");									//DEBUG
+		 Log.i(TAG, "[onCreate] Pase StartUPdateCoord: ");									//DEBUG
 		// currentThread.start();
 		 asyncgps=new GetGPSData();
-		 
-		 asyncgps.execute("");
+		 try
+		 {
+			 asyncgps.execute("");
+		 }catch(Exception ex)
+		 {
+			 Log.e(TAG, "[onCreate] Error Exception: "+ex);									//DEBUG
+		 }
 		 
 		 
 		 
@@ -103,6 +108,7 @@ public class ServiceNear extends Activity
 		@Override
 		protected String doInBackground(String... params) 
 		{
+			
 			Log.i(TAG, "[GetGPSData] GetGPSData");									//DEBUG
 			
 			
@@ -116,7 +122,7 @@ public class ServiceNear extends Activity
 				Thread.sleep(1000);
 			}catch(Exception ex)
 			{
-				
+				Log.i(TAG, "[GetGPSData] Exception Sleep: "+ex);									//DEBUG}
 			}
 			
 			
