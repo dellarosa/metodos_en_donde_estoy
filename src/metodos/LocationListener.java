@@ -1,5 +1,6 @@
-package domain;
+package metodos;
 
+import domain.Gps;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,36 +32,42 @@ public class LocationListener implements android.location.LocationListener
 	{
 		return this.mLocationManager;
 	}
-     //public LocationListener(String provider,Gps gps,Context mcontext)
+	public LocationListener()
+    {
+		Log.i(TAG, "[LocationListener] LocationListener ONLY");				//DEBUG
+		//this.setGpsNew();
+    }
 	public LocationListener(Context mcontext)
     {
-		 this.setBatteryLevel(null);
+		Log.i(TAG, "[LocationListener] LocationListener ONLY CONTEXT");				//DEBUG 
     	 this.mcontext=mcontext;
-    	 this.setGpsNew();        
+    	 this.setBatteryLevel(null);
+    	// this.setGpsNew();        
       //  mLastLocation = new Location(provider);
     	 coordenadagps=false;
     	 initializeLocationManager();	//Pruebo de llamarlo desde aca.
         
     }
-	public LocationListener(String provider,Context mcontext,Gps gpsn)
+	public LocationListener(String provider,Context mcontext,Gps gpst)
     {
-		this.setBatteryLevel(null);
+		Log.i(TAG, "[LocationListener] LocationListener Provider " + provider);				//DEBUG
     	 this.mcontext=mcontext;
-    	 //this.setGpsNew();
-    	 this.gps=gpsn;
-        Log.i(TAG, "[LocationListener] LocationListener Provider " + provider);				//DEBUG
+    	 this.setBatteryLevel(null);
+    	 this.setGpsNew();
+    	 this.setGps(gpst);
+        
       //  mLastLocation = new Location(provider);
         initializeLocationManager();	//Pruebo de llamarlo desde aca.
     }
-	public void setGps(Gps gps)
-	{
-		this.gps=gps;
-	}
 	public void setGpsNew()
 	{
 		this.gps=new Gps();
 	}
-	public Gps getGpsLoc()
+	public void setGps(Gps gps)
+	{
+		this.gps=gps;
+	}	
+	public Gps getGps()
 	{
 		return this.gps;
 	}
@@ -100,26 +107,36 @@ public class LocationListener implements android.location.LocationListener
 	    
 		@SuppressWarnings("unused")
 		public void onLocationChanged(Location location )
-	    {			 
-			// SharedPreferences settings = mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
-			
-			 //flagNewLocation=true;
-							   		  	   		
-				   		Log.i(TAG,"[onLocationChanged] SOCKET ADDRESS Remote: ");			//DEBUG
-				   						   		
-				   		/* dbLat=location.getLatitude();
-				   		 dbLon=location.getLongitude();
-				   		 dbAlt=location.getAltitude();
-				   		 flSpeed=location.getSpeed();				   		 
-				   		 */
-				   		//gps=new Gps();
-				   		this.getGpsLoc().setBattery(this.getBatteryLevel());
-				   		this.getGpsLoc().setLat(location.getLatitude());
-				   		this.getGpsLoc().setLong(location.getLongitude());
-				   		this.getGpsLoc().setAltit(location.getAltitude());
-				   		this.getGpsLoc().setVeloc(location.getSpeed());
+	    {			 			
+					try
+					{	
+						try
+						{
+							this.getGps().setLong(location.getLongitude());
+							this.getGps().setLat(location.getLatitude());			
+							this.getGps().setAltit(location.getAltitude());
+							this.getGps().setVeloc(location.getSpeed());
+						}catch(Exception ex)
+						{
+							Log.e(TAG,"[onLocationChanged] Exception Alt speed: "+ex);			//DEBUG
+						}
+				   		Log.i(TAG,"[onLocationChanged] Lat: "+this.getGps().getLatitud()+" Long: "+this.getGps().getLongitud());			//DEBUG
 				   		
-				   		
+					}catch(Exception ex)
+					{
+						Log.e(TAG,"[onLocationChanged] Exception grl: "+ex);			//DEBUG
+					}
+					
+					try
+					{
+						if(this.getBatteryLevel()!=null)					
+						{
+							this.getGps().setBattery(this.getBatteryLevel());
+						}
+					}catch(Exception e)
+					{
+						Log.e(TAG,"[onLocationChanged] Exception getbatterylevel: "+e);			//DEBUG
+					}
 	    }
 	    public void onProviderDisabled(String provider)
 	    {
@@ -158,15 +175,19 @@ public class LocationListener implements android.location.LocationListener
 	     * helpers for starting/stopping monitoring of GPS changes below 
 	     **********************************************************************/
 	    private void startListening() {
-	    	mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
+	    	SharedPreferences settings = mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
+	    	
+	    	mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,settings.getInt("Timer",2),0,this);
+	    	//mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,this);
 	    }
 
 	    private void stopListening() {
 	        if (mLocationManager != null)
 	        	mLocationManager.removeUpdates(this);
 	    }
-		///////////////////////////////////////////////////////////////////////////////////////////////////
-		
+
+	    ///////////////////////////////////////////////////////////////////////////////////////////////////
+///##########################################################################################
 		public void startLocationListenerNet(int inTiempoEnvio,LocationListener mLocationListeners)
 		{
 			SharedPreferences settings = mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
@@ -216,7 +237,7 @@ public class LocationListener implements android.location.LocationListener
 					}
 		}
 		
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///################################ START LOCATION LISTENER NEAR ########################################################################
 		public void startLocationListenerGps(int inTiempoEnvio,LocationListener mLocationListeners)
 		{
 			final int LOCATION_INTERVAL = 10000;
@@ -270,28 +291,30 @@ public class LocationListener implements android.location.LocationListener
 		
 		
 		/////////////////////////////////////////////////////////////////////////////////////////
-
-		public Gps startUpdateCoordinates(Gps gpstofill)
+///########################### START UPDATES COORDINATES NEAR ##############################################################
+		public Gps startUpdateCoordinatesNear(Gps gpstofill)
 		{		
 			//setGps(gpstofill);
 			 SharedPreferences settings = this.mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
 			 SharedPreferences.Editor editor= settings.edit();
 			 editor.putInt("Timer",1);
 			 editor.commit();
+			 Log.d(TAG, "[startUpdateCoordinates] REFERENCIA gps fill: "+gpstofill);									//DEBUG}
 			Log.i(TAG, "[startUpdateCoordinates] startUpdateCoordinates");									//DEBUG
 			try
-			{	
-				
+			{						
 				 LocationListener[] mLocationListeners = new LocationListener[] 
 				 {  						 
 						 new LocationListener(LocationManager.NETWORK_PROVIDER,this.mcontext,gpstofill),			        
 					     new LocationListener(LocationManager.GPS_PROVIDER,this.mcontext,gpstofill)
 				};
 				 Log.i(TAG, "[startUpdateCoordinates] TIEMPO DE SLEEP: "+settings.getInt("Timer",2));				//DEBUG
-				 //mLocationListeners[0].startLocationListenerNet(settings.getInt("Timer",2),mLocationListeners[0]);	//TIEMPO
-				 Log.d(TAG, "[startUpdateCoordinates] PASE LOCATION NET");				//DEBUG
+				 //mLocationListeners[0].startLocationListenerNet(settings.getInt("Timer",2),mLocationListeners[0]);	// POR AHROA SOLO GPS
+				 Log.i(TAG, "[startUpdateCoordinates] PASE LOCATION NET");				//DEBUG
 				 mLocationListeners[1].startLocationListenerGps(settings.getInt("Timer",2),mLocationListeners[1]);	//TIEMPO
-				 Log.d(TAG, "[startUpdateCoordinates] PASE LOCATION GPS");				//DEBUG
+				 Log.i(TAG, "[startUpdateCoordinates] PASE LOCATION GPS");				//DEBUG
+				 
+				 this.setGps(gpstofill);
 				 
 			}catch(Exception Ex)
 			{
@@ -299,8 +322,8 @@ public class LocationListener implements android.location.LocationListener
 				Log.e(TAG, "[startUpdateCoordinates] ERROR 1: "+Ex.getCause());									//DEBUG
 				return null;	
 			}
-			
-			
+			gpstofill=this.getGps();	//Verificar si lo devuelvo en el return o copio aca la referencia.
+						
 			/*	//Con metodo asincronico // 
 			GetGPSDataState asyncgps=new GetGPSDataState();
 			 Log.i(TAG, "[startUpdateCoordinates] Pase Asignación GETGPS ");									//DEBUG
@@ -355,11 +378,11 @@ public class LocationListener implements android.location.LocationListener
 			 
 			 Log.i(TAG, "[startUpdateCoordinates] return  gps");									//DEBUG}
 			 */
-			 return this.getGpsLoc();
+			 return this.getGps();
 		}
 		
 		////////////////////////////////////////////////////////////////////////
-
+		////####################### NO UTILIZADO POR AHORA##############################################
 		public class GetGPSDataState extends AsyncTask<String, Void, String>	
 		{
 			@Override

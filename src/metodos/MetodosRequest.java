@@ -22,7 +22,24 @@ public class MetodosRequest {
 	boolean TimerState;
 	boolean boresponse=false;
 	
-	/////////////////////////////////////////////////////////////////////////////////////////////////
+	public void setBooleanResponse(boolean response)
+	{
+		this.boresponse=response;
+	}
+	public boolean getBooleanResponse()
+	{
+		return this.boresponse;
+	}
+	public void setTimerstate(boolean timerst)
+	{
+		this.TimerState=timerst;
+	}
+	public boolean getTimerst()
+	{
+		return this.TimerState;
+	}
+	
+	/////############################################ VERIFICAR USER Y PASS ##############################################################///
 	public boolean verificarUseryPass(String struser,String strpass,String imei)		//PUEDE SER Q ENVIE OBJETOS 
 	{			    			   	 
    		final Gson gson = new Gson();
@@ -68,7 +85,53 @@ public class MetodosRequest {
         }
         return boresponse;		//Podria devolver un objeto de determinada clase
 	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	///########################################## CREATE ################################################################///
+	public boolean crearNuevoDevice(String namedevice,int idcateg )		//PUEDE SER Q ENVIE OBJETOS 
+	{			    			   	 
+   		final Gson gson = new Gson();
+   		//final String json = gson.toJson();
+   		//String urlCatLoc = new String("http://sharedpc.dnsalias.com:3001/location_points/user=cepita@gmail.com&pass=2345pepe");
+   		String urlLoc = new String(Definiciones.Definicionesgenerales.servidor+"/devices/create.json?name="+namedevice+"&idc="+String.valueOf(idcateg));
+   		
+   		Log.i(TAG, "[verificarUseryPass] ENVIAR URL: "+urlLoc );		//DEBUG
+        try
+        {
+        	objT = (RequestTaskAsync) new RequestTaskAsync().execute(urlLoc);
+        }catch(Exception ex)
+        {
+        	Log.i(TAG, "[verificarUseryPass] REQUEST EXCEPTION: "+ex );		//DEBUG
+        	return false;
+        }
+       try
+       { 
+    	   this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);
+	        if(objT.getResponse()==null)
+		   	 {
+		   		 Log.i(TAG, "[verificarUseryPass] RESPONSE NULL");		//DEBUG
+		   		 boresponse=false;
+		   		 return boresponse;
+		   	 }else		//////////////OBTUVE RESPUESTA DE ENVIO... CATEGORIAS ...
+		   	 {			   		 
+		   		 Log.i(TAG, "[verificarUseryPass] RESPONSE : "+objT.getResponse());		//DEBUG
+		   		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		   		
+		   		 Response_YesOrNot responseyesornot=gson.fromJson(objT.getResponse(), Response_YesOrNot.class);
+					if(responseyesornot.getCode()==Definiciones.Definicionesgenerales.SUCCESS) //LOGUEADO		    				
+					{
+						boresponse=true;
+					}else	//NO LOGUEADO
+					{
+						boresponse=false;
+					}	
+		   	 }
+        }catch(Exception ex)
+        {
+        	Log.i(TAG, "[Handler] Exception: "+ex);		//DEBUG
+        	boresponse=false;
+        }
+        return boresponse;		//Podria devolver un objeto de determinada clase
+	}
+	///######################################## NEAR LOCATION ##################################################################///	
     public ArrayList<CategoryPoints> obtenerLocacionesCercanas(Gps gpsloc)
     {
     	try
@@ -82,11 +145,9 @@ public class MetodosRequest {
 		   		
 		   		Log.i(TAG,"DATOS GPS: "+gpsloc.getLatitud()+" "+gpsloc.getLongitud());
 		   		final String json = gson.toJson(gpsloc); 
-		   		
-		   		//String urlCatLoc = new String("http://192.168.252.129:3333/location_points/near_location_points.json?lat=-34.593968&lng=-58.413883");
-		   		//String urlCatLoc = new String("http://192.168.252.129:3333/location_points/near_location_points.json?"+json);
-		   		//String urlCatLoc = new String("http://sharedpc.dnsalias.com:3001/location_points/near_location_points.json?"+json);
-		   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/location_points/near_location_points.json?alt=0.0&battery=50&code=CYS172827&id=AndCYS&imei=000000000000003&lat=-34.593968&lng=-58.413882&vel=0.0");
+
+		   		//String urlCatLoc = new String("Definiciones.Definicionesgenerales.servidor/locations/find_near_locations?"+json);
+		   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/locations/find_near_locations?id=000000000000003&lat=-34.593968&lng=-58.413882");
 		   		
 		   		Log.i(TAG, "[obtenerLocacionesCercanas] ENVIAR URL: "+urlCatLoc );		//DEBUG
 		        try
@@ -109,7 +170,7 @@ public class MetodosRequest {
 	    			    			
 	    			Response_NearLoc nearlocat = gson.fromJson(objT.getResponse(), Response_NearLoc.class);
 	    			
-		    		if(nearlocat.getCode()==000)
+		    		if(nearlocat.getCode()==Definiciones.Definicionesgenerales.SUCCESS)
 		    		{    				    			
 		    			return nearlocat.getCategoryPoints();
 		    		}
@@ -125,7 +186,7 @@ public class MetodosRequest {
 		}
 		return null;
 	}
-	/////////////////////////////////////////////////////////////////////////////////////////////////////7
+  ///############################################## UPDATE LOCATION ############################################################///
     public boolean updateLocation(Gps gpsloc)
     {
     	try
@@ -166,7 +227,7 @@ public class MetodosRequest {
 		    		 
 		    		 ResponseClass.Response_Update_Loc responseupdate = gson.fromJson(objT.getResponse(), ResponseClass.Response_Update_Loc.class);
 	    				    			
-		    		 if(responseupdate.getCode()==000)
+		    		 if(responseupdate.getCode()==Definiciones.Definicionesgenerales.SUCCESS)
 		    		 {
 		    			 return true;
 		    		 }  			
@@ -182,10 +243,10 @@ public class MetodosRequest {
 		return false;
 	}
    
-    
+    ///######################################### ACTUALIZAR CATEGORIAS DISPONIBLES #################################################################///
     public ArrayList<String> actualizarCategoriasDisponibles(int imei,String strversion)
     {
-    	RequestSync reqsync=new RequestSync();
+    	
     	try
 		{   
 		   		final Gson gson = new Gson();
@@ -199,7 +260,7 @@ public class MetodosRequest {
 		        {
 		        	objT = (RequestTaskAsync) new RequestTaskAsync().execute(urlCatLoc);
 		        	
-		        	//reqsync.Request(urlCatLoc);
+		        	
 		        }catch(Exception ex)
 		        {
 		        	Log.i(TAG, "[actualizarCategoriasDisponibles] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
@@ -218,7 +279,7 @@ public class MetodosRequest {
 		    		 ///TODO: Corregir	    			    			
 	    			Response_CategoryUpdate categorias = gson.fromJson(objT.getResponse(), Response_CategoryUpdate.class);
 	    			
-	    			if(categorias.getCode()==000)
+	    			if(categorias.getCode()==Definiciones.Definicionesgenerales.SUCCESS)
 	    			{
 	    				return categorias.getCategory();
 	    			}else
@@ -234,7 +295,7 @@ public class MetodosRequest {
 	}
 	
     
-///////////////////////////////////////////////////////////////////////////////////////////////////////
+  ///######################################### WAIT RESPONSE #################################################################///
 	public boolean waitResponse(int inseconds)
 	{
 		new CountDownTimer(inseconds*1000, 1000) {

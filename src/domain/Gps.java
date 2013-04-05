@@ -16,7 +16,16 @@ public class Gps
 	
 	public Gps()
 	{
+		this.lat=0;
+		this.lng=0;
+		this.vel=0;
+		this.alt=0;
+		this.imei=null;
+		this.id=null;
+		this.code=null;
+		this.battery=null;
 		
+				
 	}
 	public Gps(String Idc,double Lat,double Long,double Alti,double Speed,String Imei,String Code,String Battery)
 	{

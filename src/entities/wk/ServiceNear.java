@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 
+import metodos.LocationListener;
 import metodos.MetodosRequest;
 import metodos.RequestTaskAsync;
+import metodos.LocationListener.GetGPSDataState;
 
 import com.google.gson.Gson;
 
 import domain.CategoryPoints;
 import domain.Gps;
-import domain.LocationListener;
-import domain.LocationListener.GetGPSDataState;
 import entities.wk.ServiceNear;
 
 import android.app.Activity;
@@ -62,45 +62,55 @@ public class ServiceNear extends Activity
 	//Gps gpsnews=new Gps();
 	Gps gpsnews;
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+	///###################################################################################################
 	public ServiceNear()
+	{
+		Log.i(TAG, "**[ServiceNear] Construct servicenear***");
+		this.setGpsnews();
+	}
+	
+	public  void setGpsnews()
 	{
 		this.gpsnews=new Gps();
 	}
-	public Gps getGpsnews()
-	{
-		return this.gpsnews;
-	}
-	public void setGpsnews(Gps gpsn)
+	
+	public void setGps(Gps gpsn)
 	{
 		this.gpsnews=gpsn;
 	}
+	public Gps getGps()
+	{
+		return this.gpsnews;
+	}
+	///###################################################################################################
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		Log.i(TAG, "[onCreate] onCreate");		
 		 super.onCreate(savedInstanceState);
 		 voSetView();
-		 LocationListener listenerloc= new LocationListener(this);
+		 LocationListener listenerloc= new LocationListener();
 		 
 		 //LocationListener.GetGPSDataState gpsstate=(GetGPSDataState) new LocationListener.GetGPSDataState().execute("");
 		 //gpsstate.isCancelled();
 		 
 		 try{
-			 listenerloc.setContext(getApplicationContext());		//Rvisar contexto			 
-			 gpsnews=listenerloc.startUpdateCoordinates(this.getGpsnews());			 
-			 Log.i(TAG, "[onCreate] Pase StartUPdateCoord: GPS DATA "+gpsnews.getAltitud());									//DEBUG	 
+			 listenerloc.setContext(getApplicationContext());		//Rvisar contexto
+			 this.setGps(listenerloc.startUpdateCoordinatesNear(this.getGps()));			//SI LE PASO EL OBJETO, NO HARIA FALTA QUE DEVUELVA NADA. 
+			 	 
 		 }catch(Exception e)
 		 {
 			 Log.e(TAG, "[onCreate] Exception: "+e);									//DEBUG
 		 }
-		 
-		// currentThread.start();
-		
-		 
-		 
-		 
-		 
+		 try
+		 {
+			 GPSAsyncState gpsstate=(GPSAsyncState)new GPSAsyncState().execute("");
+		 }catch(Exception e)
+		 {
+			 Log.e(TAG, "[onCreate] Exception async: "+e);									//DEBUG
+		 }
+
+		 		 
 		 Button btMinimizes = (Button) findViewById(R.id.btMinimizarNear);    
 			btMinimizes.setOnClickListener(new OnClickListener()
 		    {     
@@ -115,6 +125,44 @@ public class ServiceNear extends Activity
 		    });
 			
 	}	
+	
+////####################### OBTENCION DE COORDENADA ##############################################
+		public class GPSAsyncState extends AsyncTask<String, Void, Boolean>	
+		{
+			protected void onPreExecute() {
+		    }
+			protected Boolean doInBackground(String... params) 
+			{	 
+				Log.i(TAG, "[doInBackground] GPSAsyncState");									//DEBUG
+				
+				try
+				{
+					while((getGps().getLatitud()==0)&&(getGps().getLongitud()==0))
+					{	
+						Log.i(TAG, "[doInBackground] While wating gps");									//DEBUG}
+						try
+						{
+							Thread.sleep(100);
+						}catch(Exception e)
+						{
+							Log.e(TAG, "[doInBackground] Exception sleep: "+e);									//DEBUG}
+						}
+					}
+				}catch(Exception e)
+				{
+					Log.i(TAG, "[doInBackground] Exception while  async: "+e);									//DEBUG}
+					return false;
+				}
+				Log.i(TAG, "[doInBackground] return");	
+				return true;
+			}	
+			
+			 @SuppressWarnings("unused")
+			protected void onPostExecute(Long result) {
+				 Log.d(TAG, "[onPostExecute] termine");
+		     }
+			 
+		}
 	
 	
 	

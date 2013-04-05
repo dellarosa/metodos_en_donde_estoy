@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 
+import metodos.LocationListener;
 import metodos.MetodosRequest;
 import metodos.RequestTaskAsync;
 
@@ -13,7 +14,6 @@ import com.google.gson.Gson;
 
 import domain.CategoryPoints;
 import domain.Gps;
-import domain.LocationListener;
 import entities.wk.ServiceControl;
 
 import android.app.Activity;

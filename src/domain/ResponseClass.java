@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class ResponseClass {
 	 
-	/////////////////////////////////////////////////////////////////////////////////////////////
+	///############################ UPDATE LOCATION ############################################################3
 	public class Response_Update_Loc
     {
     	private String message;
@@ -33,8 +33,37 @@ public class ResponseClass {
     		this.code=code;
     	}
     }
-	
-	//////////////////////////////////////////////////////////////////////////////////////////
+	///############################ CREAR NUEVO DEVICE ############################################################3
+	public class Response_CrearNuevoDevice
+    {
+    	private String message;
+    	private int code;
+    	
+    	public Response_CrearNuevoDevice()
+    	{
+    		
+    	}
+    	
+    	public String getMessage()
+    	{
+    		return this.message;
+    		
+    	}
+    	public int getCode()
+    	{
+    		return this.code;
+    	}
+    	public void setMessage(String msg)
+    	{
+    		this.message=msg;
+    	}
+    	public void setCode(int code)
+    	{
+    		this.code=code;
+    	}
+    }
+
+	///############################ NEAR LOCATION ############################################################3
 	public class Response_NearLoc {
 		
 		private String message;
@@ -68,7 +97,7 @@ public class ResponseClass {
 		
 
 	}
-/////////////////////////////////////////////////////////////////////////////////////////////
+	///############################ CATEGORY UPDATE ############################################################3
 	public class Response_CategoryUpdate
 	{
 		private String message;
@@ -107,7 +136,7 @@ public class ResponseClass {
     	}
     	
 	}
-	///////////////////////////////////////////////////////////////////////////////////////
+	///############################ UPDATE YES OR NOT ############################################################3
 	public class Response_YesOrNot
 	{
 
