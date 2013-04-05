@@ -24,7 +24,7 @@ import android.content.*;
 
 import domain.CategoryPoints;
 
-public class ScreenMap extends Activity{
+public class ScreenMap  extends android.support.v4.app.FragmentActivity{
 
 	private String TAG = "MetodosMapas";
 	Context objContext;

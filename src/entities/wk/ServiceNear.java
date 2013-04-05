@@ -61,7 +61,8 @@ public class ServiceNear extends Activity
 	boolean TimerState=false; 
 	RequestTaskAsync objT;
 	boolean flagNewLocation;
-	GPSAsyncState gpsstate;
+	
+	//GPSAsyncState gpsstate;
 	//Gps gpsnews=new Gps();
 	Gps gpsnews;
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,24 +108,37 @@ public class ServiceNear extends Activity
 		 }
 		 try
 		 {
-			 gpsstate=(GPSAsyncState)new GPSAsyncState().execute("");
+			 new GPSAsyncState().execute("");
 		 }catch(Exception e)
 		 {
 			 Log.e(TAG, "[onCreate] Exception async: "+e);									//DEBUG
 		 }
-
-		  txbuscando = (TextView) findViewById(R.id.buscandocoord);
-				 
+		 /////////////////////////////////////////////
+		 txbuscando = (TextView) findViewById(R.id.buscandocoord);
+		 mProgress = (ProgressBar) findViewById(R.id.progressBar1);
 		 btreintentar = (Button) findViewById(R.id.btreintentar);
 		 btreintentar.setVisibility(View.GONE);		 
+		 /////////////////////////////////////////////////////////////
 		 btreintentar.setOnClickListener(new OnClickListener()
 		    {     
 				public void onClick(View v) 
 				{	
-					gpsstate=(GPSAsyncState) new GPSAsyncState().execute("");
+					try
+					{
+						if(txbuscando.getVisibility()!=View.VISIBLE)
+						{txbuscando.setVisibility(View.VISIBLE);}
+						if(mProgress.getVisibility()!=View.VISIBLE)
+						 {mProgress.setVisibility(View.VISIBLE);}
+						
+						new GPSAsyncState().execute("");
+					}catch(Exception ex)
+					{
+						Log.e(TAG, "[setOnClickListener] VISIBILITY EXCEPTION: "+ex);									//DEBUG
+					}
+					
 				}
 		    });
-			
+		 /////////////////////////////////////////////////////////////
 		 Button btMinimizes = (Button) findViewById(R.id.btMinimizarNear);    
 			btMinimizes.setOnClickListener(new OnClickListener()
 		    {     
@@ -148,12 +162,10 @@ public class ServiceNear extends Activity
 			protected Boolean doInBackground(String... params) 
 			{	 
 				Log.i(TAG, "[doInBackground] GPSAsyncState");									//DEBUG
-				  mProgress = (ProgressBar) findViewById(R.id.progressBar1);
-				  mProgress.setVisibility(View.VISIBLE);
+				
 				  int x=1;
 				try
-				{
-					
+				{					
 					while((getGps().getLatitud()==0)&&(getGps().getLongitud()==0)&&(x<=100))
 					{	
 						mProgress.setProgress(x);
@@ -172,7 +184,7 @@ public class ServiceNear extends Activity
 					Log.i(TAG, "[doInBackground] Exception while  async: "+e);									//DEBUG}
 					return false;
 				}
-				//mProgress.setVisibility(View.GONE);
+
 				if(x>100)
 				{
 					Log.i(TAG, "[doInBackground] return false");
