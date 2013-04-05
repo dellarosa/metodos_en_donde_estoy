@@ -181,18 +181,21 @@ public final class R {
         public static final int TextViewUser=0x7f080001;
         public static final int btEnviarURL=0x7f08000f;
         public static final int btMinimizar=0x7f080010;
-        public static final int btMinimizarNear=0x7f080011;
+        public static final int btMinimizarNear=0x7f080014;
+        public static final int btreintentar=0x7f080013;
+        public static final int buscandocoord=0x7f080011;
         public static final int buttonEmpezarAhora=0x7f080007;
-        public static final int buttonIngresar=0x7f080014;
+        public static final int buttonIngresar=0x7f080017;
         public static final int buttonNewSearch=0x7f08000a;
         public static final int checkBoxNearLocation=0x7f080006;
         public static final int checkBoxRastreo=0x7f080005;
-        public static final int editTextTime=0x7f080013;
+        public static final int editTextTime=0x7f080016;
         public static final int imageView1=0x7f080000;
         public static final int imageView2=0x7f08000e;
         public static final int imageViewIcon=0x7f080008;
-        public static final int menu_settings=0x7f080015;
-        public static final int textViewSenderTime=0x7f080012;
+        public static final int menu_settings=0x7f080018;
+        public static final int progressBar1=0x7f080012;
+        public static final int textViewSenderTime=0x7f080015;
     }
     public static final class layout {
         public static final int howtouse=0x7f030000;

@@ -38,6 +38,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.content.BroadcastReceiver;
 import entities.wk.R;
@@ -54,11 +55,13 @@ public class ServiceNear extends Activity
 	public float flSpeed=0;
 	public String strLevelbat=null;
 	String Imei;
-	
-
+	private ProgressBar mProgress;
+	private Button btreintentar;
+	private TextView txbuscando;
 	boolean TimerState=false; 
 	RequestTaskAsync objT;
 	boolean flagNewLocation;
+	GPSAsyncState gpsstate;
 	//Gps gpsnews=new Gps();
 	Gps gpsnews;
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,13 +107,24 @@ public class ServiceNear extends Activity
 		 }
 		 try
 		 {
-			 GPSAsyncState gpsstate=(GPSAsyncState)new GPSAsyncState().execute("");
+			 gpsstate=(GPSAsyncState)new GPSAsyncState().execute("");
 		 }catch(Exception e)
 		 {
 			 Log.e(TAG, "[onCreate] Exception async: "+e);									//DEBUG
 		 }
 
-		 		 
+		  txbuscando = (TextView) findViewById(R.id.buscandocoord);
+				 
+		 btreintentar = (Button) findViewById(R.id.btreintentar);
+		 btreintentar.setVisibility(View.GONE);		 
+		 btreintentar.setOnClickListener(new OnClickListener()
+		    {     
+				public void onClick(View v) 
+				{	
+					gpsstate=(GPSAsyncState) new GPSAsyncState().execute("");
+				}
+		    });
+			
 		 Button btMinimizes = (Button) findViewById(R.id.btMinimizarNear);    
 			btMinimizes.setOnClickListener(new OnClickListener()
 		    {     
@@ -134,32 +148,58 @@ public class ServiceNear extends Activity
 			protected Boolean doInBackground(String... params) 
 			{	 
 				Log.i(TAG, "[doInBackground] GPSAsyncState");									//DEBUG
-				
+				  mProgress = (ProgressBar) findViewById(R.id.progressBar1);
+				  mProgress.setVisibility(View.VISIBLE);
+				  int x=1;
 				try
 				{
-					while((getGps().getLatitud()==0)&&(getGps().getLongitud()==0))
+					
+					while((getGps().getLatitud()==0)&&(getGps().getLongitud()==0)&&(x<=100))
 					{	
+						mProgress.setProgress(x);
 						Log.i(TAG, "[doInBackground] While wating gps");									//DEBUG}
 						try
 						{
-							Thread.sleep(100);
+							Thread.sleep(100);			//Tiempo *100
 						}catch(Exception e)
 						{
 							Log.e(TAG, "[doInBackground] Exception sleep: "+e);									//DEBUG}
 						}
+						x++;
 					}
 				}catch(Exception e)
 				{
 					Log.i(TAG, "[doInBackground] Exception while  async: "+e);									//DEBUG}
 					return false;
 				}
-				Log.i(TAG, "[doInBackground] return");	
+				//mProgress.setVisibility(View.GONE);
+				if(x>100)
+				{
+					Log.i(TAG, "[doInBackground] return false");
+					return false;
+				}
+				
+				
+				Log.i(TAG, "[doInBackground] return true");	
 				return true;
 			}	
 			
-			 @SuppressWarnings("unused")
-			protected void onPostExecute(Long result) {
-				 Log.d(TAG, "[onPostExecute] termine");
+			 
+			protected void onPostExecute(Boolean result) {
+				super.onPostExecute(result);
+				Log.d(TAG, "[onPostExecute] termine");
+				mProgress.setVisibility(View.GONE);
+				if(result==false)
+				{
+					txbuscando.setVisibility(View.GONE);
+					btreintentar.setVisibility(View.VISIBLE);
+					Log.i(TAG, "[onPostExecute] VOLVER A ENVIAR - FALSE");
+				}else
+				{
+					//TODO GO TO MAPA
+				}
+				 
+				 
 		     }
 			 
 		}

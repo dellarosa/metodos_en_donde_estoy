@@ -2,12 +2,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:layout_gravity="right"
     android:orientation="vertical" >
-    
-    <Button
+
+	<LinearLayout
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginTop="5dp"
+	    android:orientation="vertical" >
+
+	    <TextView
+	        android:id="@+id/buscandocoord"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:text="Buscando Coordenadas..."
+	        android:textSize="25dp" />
+
+	    <ProgressBar
+	        android:id="@+id/progressBar1"
+	        style="?android:attr/progressBarStyleLarge"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center" />
+
+	</LinearLayout>
+
+    	<Button
+    	    android:id="@+id/btreintentar"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:layout_gravity="center"
+    	    android:layout_marginBottom="5dp"
+    	    android:text="REINTENTAR" />
+    	
+        <Button
         android:id="@+id/btMinimizarNear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
+        android:layout_marginBottom="5dp"
         android:text="Minimize" />
+
 </LinearLayout>
