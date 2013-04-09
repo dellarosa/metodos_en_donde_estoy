@@ -56,6 +56,7 @@ public class Gps
 		 return this.vel;
 	 }
 	 
+	 
 	 public void setLat(double d)
 	 {
 			this.lat=d;
@@ -81,11 +82,6 @@ public class Gps
 
 			this.id=IdTipocel;
 
-	 }
-	 public void setImei(String sImei)
-	 {		 
-		 this.imei=sImei;
-		 
 	 }
 	 public void setBattery(String sBattery)
 	 {

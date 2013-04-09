@@ -2,15 +2,13 @@ package libreria;
 
 import java.util.ArrayList;
 
+import libreria.ResponseClass.*;
+
 import android.os.CountDownTimer;
 import android.util.Log;
 
 import com.google.gson.Gson;
 
-import domain.ResponseClass;
-import domain.ResponseClass.Response_CategoryUpdate;
-import domain.ResponseClass.Response_NearLoc;
-import domain.ResponseClass.Response_YesOrNot;
 
 
 public class MetodosRequest {
@@ -67,7 +65,7 @@ public class MetodosRequest {
 		   		 Log.i(TAG, "[verificarUseryPass] RESPONSE : "+objT.getResponse());		//DEBUG
 		   		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		   		
-		   		 Response_YesOrNot objresponseyesornot=gson.fromJson(objT.getResponse(), Response_YesOrNot.class);
+		   		Response_verificarUseryPass objresponseyesornot=gson.fromJson(objT.getResponse(), Response_verificarUseryPass.class);
 					if(objresponseyesornot.getCode()==000) //LOGUEADO		    				
 					{
 						boresponse=true;
@@ -84,12 +82,12 @@ public class MetodosRequest {
         return boresponse;		//Podria devolver un objeto de determinada clase
 	}
 	///########################################## CREATE ################################################################///
-	public boolean crearNuevoDevice(String namedevice,int idcateg )		//PUEDE SER Q ENVIE OBJETOS 
+	public boolean crearNuevoDevice(String namedevice,String categoria )		//PUEDE SER Q ENVIE OBJETOS 
 	{			    			   	 
    		final Gson gson = new Gson();
    		//final String json = gson.toJson();
    		//String urlCatLoc = new String("http://sharedpc.dnsalias.com:3001/location_points/user=cepita@gmail.com&pass=2345pepe");
-   		String urlLoc = new String(Definiciones.Definicionesgenerales.servidor+"/devices/create.json?name="+namedevice+"&idc="+String.valueOf(idcateg));
+   		String urlLoc = new String(Definiciones.Definicionesgenerales.servidor+"/devices/create.json?name="+namedevice+"&cat="+categoria);
    		
    		Log.i(TAG, "[verificarUseryPass] ENVIAR URL: "+urlLoc );		//DEBUG
         try
@@ -113,8 +111,8 @@ public class MetodosRequest {
 		   		 Log.i(TAG, "[verificarUseryPass] RESPONSE : "+objT.getResponse());		//DEBUG
 		   		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		   		
-		   		 Response_YesOrNot responseyesornot=gson.fromJson(objT.getResponse(), Response_YesOrNot.class);
-					if(responseyesornot.getCode()==Definiciones.Definicionesgenerales.SUCCESS) //LOGUEADO		    				
+		   		Response_CrearNuevoDeviceCategory responsenuevodevicecat=gson.fromJson(objT.getResponse(), Response_CrearNuevoDeviceCategory.class);
+					if(responsenuevodevicecat.getCode()==Definiciones.Definicionesgenerales.SUCCESS) //LOGUEADO		    				
 					{
 						boresponse=true;
 					}else	//NO LOGUEADO
@@ -145,7 +143,8 @@ public class MetodosRequest {
 		   		final String json = gson.toJson(gpsloc); 
 
 		   		//String urlCatLoc = new String("Definiciones.Definicionesgenerales.servidor/locations/find_near_locations?"+json);
-		   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/locations/find_near_locations?id=000000000000003&lat=-34.593968&lng=-58.413882");
+		   		//String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/locations/find_near_locations?id=000000000000003&lat=-34.593968&lng=-58.413882");
+		   		String urlCatLoc = new String("Definiciones.Definicionesgenerales.servidor/locations/find_near_locations?&lat="+gpsloc.getLatitud()+"&lng="+gpsloc.getLongitud());
 		   		
 		   		Log.i(TAG, "[obtenerLocacionesCercanas] ENVIAR URL: "+urlCatLoc );		//DEBUG
 		        try
@@ -166,7 +165,7 @@ public class MetodosRequest {
 		    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		    		 ///TODO: CATEGORYLocation deberian ser dos clases, pero todavia no probe el gson para dos objetos uno dentro de otro FD v15.3.13
 	    			    			
-	    			Response_NearLoc nearlocat = gson.fromJson(objT.getResponse(), Response_NearLoc.class);
+		    		 Response_obtenerLocacionesCercanas nearlocat = gson.fromJson(objT.getResponse(), Response_obtenerLocacionesCercanas.class);
 	    			
 		    		if(nearlocat.getCode()==Definiciones.Definicionesgenerales.SUCCESS)
 		    		{    				    			
@@ -185,7 +184,7 @@ public class MetodosRequest {
 		return null;
 	}
   ///############################################## UPDATE LOCATION ############################################################///
-    public boolean updateLocation(Gps gpsloc)
+    public boolean actualizarPosicion(Gps gpsloc)
     {
     	try
 		{   
@@ -223,7 +222,7 @@ public class MetodosRequest {
 		    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		    		 ///TODO: CATEGORYLocation deberian ser dos clases, pero todavia no probe el gson para dos objetos uno dentro de otro FD v15.3.13
 		    		 
-		    		 ResponseClass.Response_Update_Loc responseupdate = gson.fromJson(objT.getResponse(), ResponseClass.Response_Update_Loc.class);
+		    		 ResponseClass.Response_actualizarPosicion responseupdate = gson.fromJson(objT.getResponse(), ResponseClass.Response_actualizarPosicion.class);
 	    				    			
 		    		 if(responseupdate.getCode()==Definiciones.Definicionesgenerales.SUCCESS)
 		    		 {
@@ -242,7 +241,7 @@ public class MetodosRequest {
 	}
    
     ///######################################### ACTUALIZAR CATEGORIAS DISPONIBLES #################################################################///
-    public ArrayList<String> actualizarCategoriasDisponibles(int imei,String strversion)
+    public ArrayList<String> actualizarCategoriasDisponibles(String strversion)
     {
     	
     	try
@@ -251,7 +250,7 @@ public class MetodosRequest {
 		   		//final String json = gson.toJson(gpsloc); 
 		   		strversion="01.01";
 		   		//TODO ARMAR url de envio para actualizar
-		   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/categorias_disponibles/categorias_disponibles.json?Imei="+String.valueOf(imei)+"&vers="+strversion);
+		   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/categorias_disponibles/categorias_disponibles.json?&vers="+strversion);
 		   		
 		   		Log.i(TAG, "[actualizarCategoriasDisponibles] ENVIAR URL: "+urlCatLoc );		//DEBUG
 		        try
@@ -275,11 +274,11 @@ public class MetodosRequest {
 		    		 Log.i(TAG, "[actualizarCategoriasDisponibles] RESPONSE : "+objT.getResponse());		//DEBUG
 		    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		    		 ///TODO: Corregir	    			    			
-	    			Response_CategoryUpdate categorias = gson.fromJson(objT.getResponse(), Response_CategoryUpdate.class);
+		    		 Response_actualizarCategoriasDisponibles categoriaslist = gson.fromJson(objT.getResponse(), Response_actualizarCategoriasDisponibles.class);
 	    			
-	    			if(categorias.getCode()==Definiciones.Definicionesgenerales.SUCCESS)
+	    			if(categoriaslist.getCode()==Definiciones.Definicionesgenerales.SUCCESS)
 	    			{
-	    				return categorias.getCategory();
+	    				return categoriaslist.getCategoryList();
 	    			}else
 	    			{
 	    				Log.i(TAG,"[actualizarCategoriasDisponibles] NO HAY CATEGORIAS DISPONIBLES");	    				

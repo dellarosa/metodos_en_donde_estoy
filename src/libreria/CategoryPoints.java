@@ -6,9 +6,14 @@ public class CategoryPoints {
 	private double latitud;
 	private double longitud;
 	private Date update_at;
-	private String category;
 	private String categoryname;
+	private String categorydevice;
+	private Categoria categoria;
 	
+	public Categoria getCategoria()
+	{
+		return this.categoria;
+	}
 	public void setLatitud(double lat)
 	{
 		this.latitud=lat;
@@ -33,14 +38,6 @@ public class CategoryPoints {
 	{
 		return this.update_at;
 	}
-	public void setCategory(String categ)
-	{
-		this.category=categ;
-	}
-	public String getCategory()
-	{
-		return this.category;
-	}
 	public void setCategoryName(String categname)
 	{
 		this.categoryname=categname;
@@ -49,6 +46,15 @@ public class CategoryPoints {
 	{
 		return this.categoryname;
 	}
+	public String getCategoryDevice()
+	{
+		return this.categorydevice;
+	}
+	public void setCategoryDevice(String categdevice)
+	{
+		this.categorydevice=categdevice;
+	}
+
 	
 	
 }

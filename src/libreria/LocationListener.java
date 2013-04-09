@@ -22,7 +22,7 @@ public class LocationListener implements android.location.LocationListener
 	private TelephonyManager mTelephoneManager = null;
 	private Context mcontext;
 	private String strLevelbat;
-	private boolean coordenadagps;
+	private boolean modorastreo;
 	public TelephonyManager getTelMgr()
 	{
 		return this.mTelephoneManager;
@@ -43,7 +43,7 @@ public class LocationListener implements android.location.LocationListener
     	 this.setBatteryLevel(null);
     	// this.setGpsNew();        
       //  mLastLocation = new Location(provider);
-    	 coordenadagps=false;
+    	 //coordenadagps=false;
     	 initializeLocationManager();	//Pruebo de llamarlo desde aca.
         
     }
@@ -69,6 +69,14 @@ public class LocationListener implements android.location.LocationListener
       //  mLastLocation = new Location(provider);
         initializeLocationManager();	//Pruebo de llamarlo desde aca.
     }
+	private void setModoRastreo(boolean rastreo)
+	{
+		this.modorastreo=true;
+	}
+	private boolean getModoRastreo()
+	{
+		return this.modorastreo;
+	}
 	public void setGpsNew()
 	{
 		this.gps=new Gps();
@@ -117,36 +125,44 @@ public class LocationListener implements android.location.LocationListener
 	    
 		@SuppressWarnings("unused")
 		public void onLocationChanged(Location location )
-	    {			 			
-					try
-					{	
-						try
-						{
-							this.getGps().setLong(location.getLongitude());
-							this.getGps().setLat(location.getLatitude());			
-							this.getGps().setAltit(location.getAltitude());
-							this.getGps().setVeloc(location.getSpeed());
-						}catch(Exception ex)
-						{
-							Log.e(TAG,"[onLocationChanged] Exception Alt speed: "+ex);			//DEBUG
-						}
-				   		Log.i(TAG,"[onLocationChanged] Lat: "+this.getGps().getLatitud()+" Long: "+this.getGps().getLongitud());			//DEBUG
-				   		
-					}catch(Exception ex)
-					{
-						Log.e(TAG,"[onLocationChanged] Exception grl: "+ex);			//DEBUG
-					}
-					
-					try
-					{
-						if(this.getBatteryLevel()!=null)					
-						{
-							this.getGps().setBattery(this.getBatteryLevel());
-						}
-					}catch(Exception e)
-					{
-						Log.e(TAG,"[onLocationChanged] Exception getbatterylevel: "+e);			//DEBUG
-					}
+	    {			
+			try
+			{	
+				try
+				{
+					this.getGps().setLong(location.getLongitude());
+					this.getGps().setLat(location.getLatitude());			
+					this.getGps().setAltit(location.getAltitude());
+					this.getGps().setVeloc(location.getSpeed());
+				}catch(Exception ex)
+				{
+					Log.e(TAG,"[onLocationChanged] Exception Alt speed: "+ex);			//DEBUG
+				}
+		   		Log.i(TAG,"[onLocationChanged] Lat: "+this.getGps().getLatitud()+" Long: "+this.getGps().getLongitud());			//DEBUG
+		   		
+			}catch(Exception ex)
+			{
+				Log.e(TAG,"[onLocationChanged] Exception grl: "+ex);			//DEBUG
+			}
+			
+			try
+			{
+				if(this.getBatteryLevel()!=null)					
+				{
+					this.getGps().setBattery(this.getBatteryLevel());
+				}
+			}catch(Exception e)
+			{
+				Log.e(TAG,"[onLocationChanged] Exception getbatterylevel: "+e);			//DEBUG
+			}
+			
+			if(this.getModoRastreo()==true)
+			{				
+					//SEND DATA
+		    }else		//MODO RASTREO
+		    {
+		    	
+		    }
 	    }
 	    public void onProviderDisabled(String provider)
 	    {
@@ -197,7 +213,7 @@ public class LocationListener implements android.location.LocationListener
 	    }
 
 	    ///////////////////////////////////////////////////////////////////////////////////////////////////
-///##########################################################################################
+///############################# SET LOCATION LISTENER NET #############################################################
 		public void startLocationListenerNet(int inTiempoEnvio,LocationListener mLocationListeners)
 		{
 			SharedPreferences settings = mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
@@ -247,7 +263,7 @@ public class LocationListener implements android.location.LocationListener
 					}
 		}
 		
-///################################ START LOCATION LISTENER NEAR ########################################################################
+///################################ START LOCATION LISTENER GPS NEAR  ########################################################################
 		public void startLocationListenerGps(int inTiempoEnvio,LocationListener mLocationListeners)
 		{
 			final int LOCATION_INTERVAL = 10000;
@@ -339,14 +355,17 @@ public class LocationListener implements android.location.LocationListener
 		
 		
 /////////////////////////////////////////////////////////////////////////////////////////
-///########################### START LOCATION UPDATE - PARA NEAR ##############################################################
-public boolean startLocationUpdate()		//No sería necesario recibir el objeto
+///########################### START LOCATION UPDATE - PARA RASTREO ##############################################################
+public boolean startLocationUpdate()		
 {		
 	//setGps(gpstofill);
 	SharedPreferences settings = this.mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
 	SharedPreferences.Editor editor= settings.edit();
-	editor.putInt("Timer",1);
+	//editor.putInt("Timer",1);
 	editor.commit();
+	
+	this.setModoRastreo(true);		//ACTIVO MODO RASTREO
+	
 	// Log.d(TAG, "[startUpdateCoordinates] REFERENCIA gps fill: "+gpstofill);									//DEBUG}
 	Log.i(TAG, "[obtenerCoordenadas] startUpdateCoordinates");									//DEBUG
 	try
@@ -379,48 +398,11 @@ public boolean startLocationUpdate()		//No sería necesario recibir el objeto
 ////####################### STOP LOCATION UPDATE ##############################################
 public boolean stopLocationUpdate()
 {
-	
+	this.onDestroy();		//PROBAR
+	//this.onPause();
+	//TODO
 	return true;
 }
-
-		////////////////////////////////////////////////////////////////////////
-		////####################### NO UTILIZADO POR AHORA##############################################
-		public class getGPSDataState extends AsyncTask<String, Void, String>	
-		{
-			@Override
-			protected String doInBackground(String... params) 
-			{											
-				 
-				Log.i(TAG, "[doInBackground] GetGPSData");									//DEBUG
-				try
-				{
-					while((gps.getLatitud()==0)&&(gps.getLongitud()==0))
-					{
-						Log.i(TAG, "[doInBackground] While wating gps");									//DEBUG}
-						try
-						{
-							Thread.sleep(100);
-						}catch(Exception e)
-						{
-							Log.e(TAG, "[doInBackground] Exception sleep: "+e);									//DEBUG}
-						}
-					}
-				}catch(Exception e)
-				{
-					Log.i(TAG, "[doInBackground] Exception while  async: "+e);									//DEBUG}
-					return null;
-				}
-				Log.i(TAG, "[doInBackground] return");	
-				return "OK";
-			}	
-			
-			 @SuppressWarnings("unused")
-			protected void onPostExecute(Long result) {
-		         coordenadagps=true;
-		     }
-			 
-		}
-		
 		
 
 		

@@ -1,18 +1,17 @@
-package domain;
+package libreria;
 
 import java.util.ArrayList;
 
-import libreria.CategoryPoints;
 
 public class ResponseClass {
 	 
-	///############################ UPDATE LOCATION ############################################################3
-	public class Response_Update_Loc
+	///############################ ACTUALIZAR POSICION - UPDATE LOCATION ############################################################3
+	public class Response_actualizarPosicion
     {
     	private String message;
     	private int code;
     	
-    	public Response_Update_Loc()
+    	public Response_actualizarPosicion()
     	{
     		
     	}
@@ -36,12 +35,12 @@ public class ResponseClass {
     	}
     }
 	///############################ CREAR NUEVO DEVICE ############################################################3
-	public class Response_CrearNuevoDevice
+	public class Response_CrearNuevoDeviceCategory
     {
     	private String message;
     	private int code;
     	
-    	public Response_CrearNuevoDevice()
+    	public Response_CrearNuevoDeviceCategory()
     	{
     		
     	}
@@ -65,13 +64,17 @@ public class ResponseClass {
     	}
     }
 
-	///############################ NEAR LOCATION ############################################################3
-	public class Response_NearLoc {
+	///############################ POSICIONES CERCANAS - NEAR LOCATION ############################################################3
+	public class Response_obtenerLocacionesCercanas {
 		
 		private String message;
 		private int code;
 		private ArrayList<CategoryPoints> CategoryPoints;
 		
+		public Response_obtenerLocacionesCercanas()
+		{
+			
+		}
 		public void setMessage(String msg)
 		{
 			this.message=msg;
@@ -100,13 +103,13 @@ public class ResponseClass {
 
 	}
 	///############################ CATEGORY UPDATE ############################################################3
-	public class Response_CategoryUpdate
+	public class Response_actualizarCategoriasDisponibles
 	{
 		private String message;
     	private int code;
     	private ArrayList<String> Category;
     	
-    	public Response_CategoryUpdate()
+    	public Response_actualizarCategoriasDisponibles()
     	{
     		
     	}
@@ -128,24 +131,24 @@ public class ResponseClass {
     	{
     		this.code=code;
     	}
-    	public void setCategory(ArrayList<String> categ)
+    	public void setCategoryList(ArrayList<String> categ)
     	{
     		this.Category=categ;
     	}
-    	public ArrayList<String> getCategory()
+    	public ArrayList<String> getCategoryList()
     	{
     		return this.Category;
     	}
     	
 	}
 	///############################ UPDATE YES OR NOT ############################################################3
-	public class Response_YesOrNot
+	public class Response_crearNuevoDevice
 	{
 
 	    	private String message;
 	    	private int code;
 	    	
-	    	public Response_YesOrNot()
+	    	public Response_crearNuevoDevice()
 	    	{
 	    		
 	    	}
@@ -169,5 +172,35 @@ public class ResponseClass {
 	    	}
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////
-	
+	///############################ VERIFICAR USUARIO Y PASSWORD ############################################################3
+	public class Response_verificarUseryPass
+	{
+
+	    	private String message;
+	    	private int code;
+	    	
+	    	public Response_verificarUseryPass()
+	    	{
+	    		
+	    	}
+	    	
+	    	public String getMessage()
+	    	{
+	    		return this.message;
+	    		
+	    	}
+	    	public int getCode()
+	    	{
+	    		return this.code;
+	    	}
+	    	public void setMessage(String msg)
+	    	{
+	    		this.message=msg;
+	    	}
+	    	public void setCode(int code)
+	    	{
+	    		this.code=code;
+	    	}
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////
 }

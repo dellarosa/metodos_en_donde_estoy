@@ -19,6 +19,7 @@ public class MetodosGral {
 		this.mcontex=mcontex;
 	}
 	//	/////////////////////////////////////////////////////////////////////////////////
+	///################################## ACTUALIZAR CATEGORIAS ####################################################
 	public boolean actualizarCategorias()
 	{
 		metrequest =new MetodosRequest();	     		
@@ -27,7 +28,7 @@ public class MetodosGral {
 		//TODO ACTUALIZAR CATEGORIAS DISPONIBLES
 		SharedPreferences sharedvers = mcontex.getSharedPreferences("VERSION",Context.MODE_PRIVATE);
 		
-		ArrayList<String> categorias=metrequest.actualizarCategoriasDisponibles(Integer.valueOf(getDeviceID()), sharedvers.getString("VERSION",null));
+		ArrayList<String> categorias=metrequest.actualizarCategoriasDisponibles(sharedvers.getString("VERSION",null));
 		
 		if(categorias!=null)
 		{
@@ -48,6 +49,7 @@ public class MetodosGral {
 		return true;
 	}
 	
+	///####################################################### GET DEVICE ID - IMEI ################################
     public String getDeviceID() 
    {
    	  TelephonyManager TelephonyMgr = (TelephonyManager) mcontex.getSystemService(Context.TELEPHONY_SERVICE);

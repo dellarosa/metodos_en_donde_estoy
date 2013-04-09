@@ -82,8 +82,9 @@ public class ServiceNear extends Activity
 		 
 		 try{
 			 listenerloc.setContext(getApplicationContext());		//Rvisar contexto
-			 this.setGps(listenerloc.obtenerCoordenadas(this.getGps()));			//SI LE PASO EL OBJETO, NO HARIA FALTA QUE DEVUELVA NADA. 
-			// this.setGps(listenerloc.obtenerCoordenadas());			//SI LE PASO EL OBJETO, NO HARIA FALTA QUE DEVUELVA NADA.
+			// this.setGps(listenerloc.obtenerCoordenadas(this.getGps()));			//SI LE PASO EL OBJETO, NO HARIA FALTA QUE DEVUELVA NADA. 
+			// this.setGps(listenerloc.obtenerCoordenadas());			
+			 listenerloc.obtenerCoordenadas(this.getGps());
 		 }catch(Exception e)
 		 {
 			 Log.e(TAG, "[onCreate] Exception: "+e);									//DEBUG
@@ -191,7 +192,15 @@ public class ServiceNear extends Activity
 					Log.i(TAG, "[onPostExecute] VOLVER A ENVIAR - FALSE");
 				}else
 				{
-					//TODO GO TO MAPA
+					//TODO GO TO MAPA	
+					try
+				    {
+				    	Log.i(TAG,"[onCreate]Voy a empezar Mapas");
+				    	startActivity(new Intent(getApplicationContext(),ScreenMap.class));
+				    }catch(Exception ex)
+				    {
+				    	Log.e(TAG,"[onCreate]Exception Start Mapas: "+ex);
+				    }	
 				}
 				 
 				 

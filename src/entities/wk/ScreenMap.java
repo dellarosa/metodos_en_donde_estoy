@@ -26,6 +26,7 @@ public class ScreenMap  extends android.support.v4.app.FragmentActivity{
 
 	private String TAG = "MetodosMapas";
 	Context objContext;
+	TextView txViewAddress;
 	public ScreenMap()
 	{
 		
@@ -47,7 +48,7 @@ public class ScreenMap  extends android.support.v4.app.FragmentActivity{
 				Intent IntHTService = null;				    				    
 			    try
 			    {
-			    	IntHTService=new Intent(getApplicationContext(),ServiceControl.class);
+			    	IntHTService=new Intent(getApplicationContext(),ServiceNear.class);
 			    }catch(Exception Ex)
 			    {
 			    	Log.e(TAG,"[onCreate] Exception MetodosMapas Intent: "+Ex);	
@@ -63,6 +64,7 @@ public class ScreenMap  extends android.support.v4.app.FragmentActivity{
 	    });
 	    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	    
+	    /*
 	    ///TODO: EN VERDAD DEBERIAN SER DOS CLASES DISTINTAS; UNA PARA LOCAL-Tipo Y LA OTRA PARA CATEGORIA, PERO TODAVIA NO PROBE getSerializable...para un objeto dentro de otro  //FD v15.3.13
 	     CategoryPoints[] objCategoryLoc=(CategoryPoints[]) getIntent().getSerializableExtra("DatosCatLoc");
 		
@@ -72,7 +74,7 @@ public class ScreenMap  extends android.support.v4.app.FragmentActivity{
 		}else
 		{
 			Log.i(TAG, "[onCreate] NO SE COLOCARON PUNTOS EN MAPA");		//DEBUG
-		}  
+		} */ 
 		    
 	}
 	
@@ -80,7 +82,7 @@ public class ScreenMap  extends android.support.v4.app.FragmentActivity{
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	public boolean ColocarPuntosEnMapa(CategoryPoints[] objCatLoc)
 	{
-		TextView txViewAddress;
+		
 		
 		Geocoder geocoder = new Geocoder(objContext.getApplicationContext(), Locale.getDefault());
 		
@@ -100,7 +102,7 @@ public class ScreenMap  extends android.support.v4.app.FragmentActivity{
 				Log.i(TAG, "[onCreate] Adresses IO exception: "+e  );		//DEBUG
 				e.printStackTrace();
 			}
-   			Log.i(TAG, "[onCreate] Category Id: "+objCatLoc[x].getCategory() + " - Category Name: "+objCatLoc[x].getCategoryName());		//DEBUG
+   			Log.i(TAG, "[onCreate] Category Device: "+objCatLoc[x].getCategoryDevice() + " - Category Name: "+objCatLoc[x].getCategoryName());		//DEBUG
    			
    			if (addresses.size() > 0) 
    			{
