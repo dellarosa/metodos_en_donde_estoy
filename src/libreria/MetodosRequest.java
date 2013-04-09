@@ -1,14 +1,12 @@
-package metodos;
+package libreria;
 
 import java.util.ArrayList;
+
 import android.os.CountDownTimer;
 import android.util.Log;
 
 import com.google.gson.Gson;
 
-import domain.CategoryPoints;
-import domain.Definiciones;
-import domain.Gps;
 import domain.ResponseClass;
 import domain.ResponseClass.Response_CategoryUpdate;
 import domain.ResponseClass.Response_NearLoc;
@@ -310,71 +308,4 @@ public class MetodosRequest {
 		  
 		  return true;
 	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////7
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////// DEPRECATED ////////////////////
-	private boolean verificarUseryPass_D(String struser,String strpass,String imei)		//PUEDE SER Q ENVIE OBJETOS 
-	{			    			   	 
-   		final Gson gson = new Gson();
-   		//final String json = gson.toJson();
-   		//String urlCatLoc = new String("http://sharedpc.dnsalias.com:3001/location_points/user=cepita@gmail.com&pass=2345pepe");
-   		String urlCatLoc = new String("http://sharedpc.dnsalias.com:3001/location_points/user="+struser+"&pass="+strpass+"&imei="+imei);
-   		
-   		Log.i(TAG, "[verificarUseryPass] ENVIAR URL: "+urlCatLoc );		//DEBUG
-        try
-        {
-        	objT = (RequestTaskAsync) new RequestTaskAsync().execute(urlCatLoc);
-        }catch(Exception ex)
-        {
-        	Log.i(TAG, "[Handler] REQUEST EXCEPTION: "+ex );		//DEBUG
-        	return false;
-        }
-        /////////////////////////////////////////////////////////////////////////////
-      
-        try
-        {	
-	       TimerState = false;	    
-	       
-    	   new CountDownTimer(5000, 1000) {
-    		     public void onTick(long millisUntilFinished) {			    		         
-    		         Log.i(TAG, "[verificarUseryPass] ONTICK: "+millisUntilFinished/1000);		//DEBUG
-    		     }
-    		     public void onFinish() {
-    		    	 Log.i(TAG, "[verificarUseryPass] TIMER DONE");		//DEBUG
-    		    	 TimerState=true;    
-    		    	 if(objT.getResponse()==null)
-    		    	 {
-    		    		 Log.i(TAG, "[verificarUseryPass] RESPONSE NULL");		//DEBUG
-    		    		 boresponse=false;
-    		    		 return;
-    		    	 }else		//////////////OBTUVE RESPUESTA DE ENVIO... CATEGORIAS ...
-    		    	 {
-    		    		 
-    		    		 Log.i(TAG, "[verificarUseryPass] RESPONSE : "+objT.getResponse());		//DEBUG
-    		    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    		    		
-    		    		 Response_YesOrNot objresponseyesornot=gson.fromJson(objT.getResponse(), Response_YesOrNot.class);
-						
-		    			if(objresponseyesornot.getCode()==000) //LOGUEADO		    				
-		    			{
-		    				boresponse=true;
-		    			}else	//NO LOGUEADO
-		    			{
-		    				boresponse=false;
-		    			}
-    		    	 }    		    	 
-    		     }
-    		  }.start();
-
-	       /// USO UN THREAD ASINCRONICO PERO NO QUIERO QUE REALICE OTRA COSA SI NOT ENGO LA RESPUESTA,
-	       /// DE ESTE MODO MANEJO LA RESPUESTA 
-        }catch(Exception ex)
-        {
-        	Log.i(TAG, "[Handler] Exception: "+ex);		//DEBUG
-        	boresponse=false;
-        }
-        return boresponse;
-	}
-	
 }

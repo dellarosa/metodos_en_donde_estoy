@@ -1,28 +1,20 @@
 package entities.wk;
 
-import java.util.ArrayList;
-import java.util.Random;
 
-import metodos.MetodosGrl;
-import metodos.MetodosRequest;
-import metodos.RequestTaskAsync;
+import libreria.Definiciones;
 
-import com.google.gson.Gson;
+import libreria.MetodosGral;
+import libreria.MetodosRequest;
+import libreria.RequestTaskAsync;
 
-import domain.Category;
-import domain.CategoryPoints;
-import domain.Definiciones;
-import domain.Files;
-import domain.Gps;
-import domain.Definiciones.*;
+//import domain.Files;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.telephony.TelephonyManager;
+
 import android.util.Log;
-import android.view.Gravity;
+
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -30,7 +22,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.TextView;
 import entities.wk.R;
 
 public class Loggin extends Activity {
@@ -38,18 +29,18 @@ public class Loggin extends Activity {
 	public static String TAG = "Loggin:";
 	/** Called when the activity is first created. */
 	public String strImeiID=null; 
-	private String pathFiles="/CYS/";
-    private String strNameFileCode="cyscod.txt";
-	private Files objFiles = new Files();
+//	private String pathFiles="/CYS/";
+//    private String strNameFileCode="cyscod.txt";
+//	private Files objFiles = new Files();
 	
 	  CheckBox checkBoxRastreo; 
 	  CheckBox checkBoxNear;
 	 RequestTaskAsync objT;
-     private EditText etxUser;
-     private EditText etxPass;     
+     //private EditText etxUser;
+//     private EditText etxPass;     
       Button buttonstart;
      boolean TimerState;
-     MetodosGrl metgrl;
+     MetodosGral metgrl;
      MetodosRequest metreq;
      
      /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +55,7 @@ public class Loggin extends Activity {
 		 super.onCreate(savedInstanceState);
 		 Log.i(TAG,"[onCreate] DENTRO ONCREATE");
 	     setContentView(R.layout.howtouse);
-	     metgrl=new MetodosGrl(this);
+	     metgrl=new MetodosGral(this);
 	     metreq =new MetodosRequest();
  	     // ///
 	     metgrl.actualizarCategorias();

@@ -52,7 +52,7 @@ public class DondeEstoy extends Activity {
 		        		}
 		        		try
 		        		{
-		        			Log.i(TAG,"[onCreate] START ACTIVITY HOW TO USE");			//DEBUG
+		        			Log.i(TAG,"[onCreate] START ACTIVITY Login");			//DEBUG
 		        			startActivity(IntHow);
 		        		}catch(Exception excp)
 		        		{

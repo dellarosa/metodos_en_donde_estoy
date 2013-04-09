@@ -1,39 +1,21 @@
 package entities.wk;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Timer;
+import libreria.Gps;
+import libreria.LocationListener;
 
-import metodos.LocationListener;
-import metodos.MetodosRequest;
-import metodos.RequestTaskAsync;
-import metodos.LocationListener.GetGPSDataState;
+import libreria.RequestTaskAsync;
 
-import com.google.gson.Gson;
-
-import domain.CategoryPoints;
-import domain.Gps;
 import entities.wk.ServiceNear;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Handler;
+
 import android.os.IBinder;
-import android.telephony.TelephonyManager;
+
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -100,14 +82,15 @@ public class ServiceNear extends Activity
 		 
 		 try{
 			 listenerloc.setContext(getApplicationContext());		//Rvisar contexto
-			 this.setGps(listenerloc.startUpdateCoordinatesNear(this.getGps()));			//SI LE PASO EL OBJETO, NO HARIA FALTA QUE DEVUELVA NADA. 
-			 	 
+			 this.setGps(listenerloc.obtenerCoordenadas(this.getGps()));			//SI LE PASO EL OBJETO, NO HARIA FALTA QUE DEVUELVA NADA. 
+			// this.setGps(listenerloc.obtenerCoordenadas());			//SI LE PASO EL OBJETO, NO HARIA FALTA QUE DEVUELVA NADA.
 		 }catch(Exception e)
 		 {
 			 Log.e(TAG, "[onCreate] Exception: "+e);									//DEBUG
 		 }
 		 try
 		 {
+			 Log.d(TAG, "[onCreate] GPS ASYNCSTATE ");									//DEBUG
 			 new GPSAsyncState().execute("");
 		 }catch(Exception e)
 		 {

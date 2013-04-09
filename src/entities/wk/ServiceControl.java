@@ -1,19 +1,15 @@
 package entities.wk;
 
-import java.io.IOException;
+
 import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.Timer;
 
-import metodos.LocationListener;
-import metodos.MetodosRequest;
-import metodos.RequestTaskAsync;
+import libreria.CategoryPoints;
+import libreria.Gps;
+import libreria.MetodosRequest;
+import libreria.RequestTaskAsync;
 
-import com.google.gson.Gson;
 
-import domain.CategoryPoints;
-import domain.Gps;
+
 import entities.wk.ServiceControl;
 
 import android.app.Activity;
@@ -21,15 +17,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
+
 import android.os.Bundle;
-import android.os.CountDownTimer;
+
 import android.os.Handler;
 import android.os.IBinder;
-import android.telephony.TelephonyManager;
+
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;

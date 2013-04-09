@@ -1,6 +1,5 @@
-package metodos;
+package libreria;
 
-import domain.Gps;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -55,6 +54,17 @@ public class LocationListener implements android.location.LocationListener
     	 this.setBatteryLevel(null);
     	 this.setGpsNew();
     	 this.setGps(gpst);
+        
+      //  mLastLocation = new Location(provider);
+        initializeLocationManager();	//Pruebo de llamarlo desde aca.
+    }
+	public LocationListener(String provider,Context mcontext)
+    {
+		Log.i(TAG, "[LocationListener] LocationListener Provider " + provider);				//DEBUG
+    	 this.mcontext=mcontext;
+    	 this.setBatteryLevel(null);
+    	 this.setGpsNew();
+    	 //this.setGps(gpst);
         
       //  mLastLocation = new Location(provider);
         initializeLocationManager();	//Pruebo de llamarlo desde aca.
@@ -291,16 +301,16 @@ public class LocationListener implements android.location.LocationListener
 		
 		
 		/////////////////////////////////////////////////////////////////////////////////////////
-///########################### START UPDATES COORDINATES NEAR ##############################################################
-		public Gps startUpdateCoordinatesNear(Gps gpstofill)
+///########################### OBTENER COORDENADAS - PARA NEAR ##############################################################
+		public Gps obtenerCoordenadas(Gps gpstofill)		//No sería necesario recibir el objeto
 		{		
-			//setGps(gpstofill);
+			// setGps(gpstofill);
 			 SharedPreferences settings = this.mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
 			 SharedPreferences.Editor editor= settings.edit();
 			 editor.putInt("Timer",1);
 			 editor.commit();
-			 Log.d(TAG, "[startUpdateCoordinates] REFERENCIA gps fill: "+gpstofill);									//DEBUG}
-			Log.i(TAG, "[startUpdateCoordinates] startUpdateCoordinates");									//DEBUG
+			// Log.d(TAG, "[startUpdateCoordinates] REFERENCIA gps fill: "+gpstofill);									//DEBUG}
+			Log.i(TAG, "[obtenerCoordenadas] startUpdateCoordinates");									//DEBUG
 			try
 			{						
 				 LocationListener[] mLocationListeners = new LocationListener[] 
@@ -308,82 +318,74 @@ public class LocationListener implements android.location.LocationListener
 						 new LocationListener(LocationManager.NETWORK_PROVIDER,this.mcontext,gpstofill),			        
 					     new LocationListener(LocationManager.GPS_PROVIDER,this.mcontext,gpstofill)
 				};
-				 Log.i(TAG, "[startUpdateCoordinates] TIEMPO DE SLEEP: "+settings.getInt("Timer",2));				//DEBUG
+				 Log.i(TAG, "[obtenerCoordenadas] TIEMPO DE SLEEP: "+settings.getInt("Timer",2));				//DEBUG
 				 //mLocationListeners[0].startLocationListenerNet(settings.getInt("Timer",2),mLocationListeners[0]);	// POR AHROA SOLO GPS
-				 Log.i(TAG, "[startUpdateCoordinates] PASE LOCATION NET");				//DEBUG
+				 Log.i(TAG, "[obtenerCoordenadas] PASE LOCATION NET");				//DEBUG
 				 mLocationListeners[1].startLocationListenerGps(settings.getInt("Timer",2),mLocationListeners[1]);	//TIEMPO
-				 Log.i(TAG, "[startUpdateCoordinates] PASE LOCATION GPS");				//DEBUG
+				 Log.i(TAG, "[obtenerCoordenadas] PASE LOCATION GPS");				//DEBUG
 				 
 				 this.setGps(gpstofill);
 				 
 			}catch(Exception Ex)
 			{
-				Log.e(TAG, "[startUpdateCoordinates] ERROR: "+Ex);									//DEBUG
-				Log.e(TAG, "[startUpdateCoordinates] ERROR 1: "+Ex.getCause());									//DEBUG
+				Log.e(TAG, "[obtenerCoordenadas] ERROR: "+Ex);									//DEBUG
+				Log.e(TAG, "[obtenerCoordenadas] ERROR 1: "+Ex.getCause());									//DEBUG
 				return null;	
 			}
-			gpstofill=this.getGps();	//Verificar si lo devuelvo en el return o copio aca la referencia.
-						
-			/*	//Con metodo asincronico // 
-			GetGPSDataState asyncgps=new GetGPSDataState();
-			 Log.i(TAG, "[startUpdateCoordinates] Pase Asignación GETGPS ");									//DEBUG
-			 try
-			 {
-				 asyncgps.execute("");
-				 Log.i(TAG, "[startUpdateCoordinates] Pase Execute ");									//DEBUG
-			 }catch(Exception ex)
-			 {
-				 Log.e(TAG, "[startUpdateCoordinates] Error Exception: "+ex);									//DEBUG
-			 }
+			//gpstofill=this.getGps();	//Verificar si lo devuelvo en el return o copio aca la referencia.
 			
-			 try
-				{
-					Thread.sleep(3000);
-				}catch(Exception e)
-				{
-					Log.e(TAG, "[startUpdateCoordinates] Exception while sleep: "+e);									//DEBUG}
-				}
-				
-			*/	
-			/*try
-			{
-				 while((gps.getLatitud()==0)&&(gps.getLongitud()==0))
-				{
-					Log.i(TAG, "[startUpdateCoordinates] While wating gps");									//DEBUG}
-					try
-					{
-						Thread.sleep(1500);
-					}catch(Exception e)
-					{
-						Log.e(TAG, "[startUpdateCoordinates] Exception while sleep: "+e);									//DEBUG}
-					}
-				}
-			}catch(Exception e)
-			{
-				Log.e(TAG, "[startUpdateCoordinates] Exception while: "+e);									//DEBUG}
-			}
-			*/
-			/* try
-			 {
-				 while(!coordenadagps)
-				 {
-				
-						 	Log.i(TAG, "[startUpdateCoordinates] COORDENADAS GPS NULL - vuelvo a enviar");									//DEBUG}
-							Thread.sleep(4000);
-				 }
-			 }catch(Exception e)
-			 {
-				 Log.e(TAG, "[startUpdateCoordinates] Exception while sleep: "+e);									//DEBUG}
-			 } 
-			 
-			 Log.i(TAG, "[startUpdateCoordinates] return  gps");									//DEBUG}
-			 */
 			 return this.getGps();
 		}
 		
+		
+/////////////////////////////////////////////////////////////////////////////////////////
+///########################### START LOCATION UPDATE - PARA NEAR ##############################################################
+public boolean startLocationUpdate()		//No sería necesario recibir el objeto
+{		
+	//setGps(gpstofill);
+	SharedPreferences settings = this.mcontext.getSharedPreferences("Timer",Context.MODE_PRIVATE);
+	SharedPreferences.Editor editor= settings.edit();
+	editor.putInt("Timer",1);
+	editor.commit();
+	// Log.d(TAG, "[startUpdateCoordinates] REFERENCIA gps fill: "+gpstofill);									//DEBUG}
+	Log.i(TAG, "[obtenerCoordenadas] startUpdateCoordinates");									//DEBUG
+	try
+	{						
+		LocationListener[] mLocationListeners = new LocationListener[] 
+	{  						 
+				new LocationListener(LocationManager.NETWORK_PROVIDER,this.mcontext),			        
+				new LocationListener(LocationManager.GPS_PROVIDER,this.mcontext)
+	};
+	Log.i(TAG, "[obtenerCoordenadas] TIEMPO DE SLEEP: "+settings.getInt("Timer",2));				//DEBUG
+	//mLocationListeners[0].startLocationListenerNet(settings.getInt("Timer",2),mLocationListeners[0]);	// POR AHROA SOLO GPS
+	Log.i(TAG, "[obtenerCoordenadas] PASE LOCATION NET");				//DEBUG
+	mLocationListeners[1].startLocationListenerGps(settings.getInt("Timer",2),mLocationListeners[1]);	//TIEMPO
+	Log.i(TAG, "[obtenerCoordenadas] PASE LOCATION GPS");				//DEBUG
+	
+	//	 this.setGps(gpstofill);
+	
+	}catch(Exception Ex)
+	{
+		Log.e(TAG, "[obtenerCoordenadas] ERROR: "+Ex);									//DEBUG
+		Log.e(TAG, "[obtenerCoordenadas] ERROR 1: "+Ex.getCause());									//DEBUG
+		return false;	
+	}
+	//gpstofill=this.getGps();	//Verificar si lo devuelvo en el return o copio aca la referencia.
+	
+	return true;
+}
+
+////////////////////////////////////////////////////////////////////////
+////####################### STOP LOCATION UPDATE ##############################################
+public boolean stopLocationUpdate()
+{
+	
+	return true;
+}
+
 		////////////////////////////////////////////////////////////////////////
 		////####################### NO UTILIZADO POR AHORA##############################################
-		public class GetGPSDataState extends AsyncTask<String, Void, String>	
+		public class getGPSDataState extends AsyncTask<String, Void, String>	
 		{
 			@Override
 			protected String doInBackground(String... params) 

@@ -19,7 +19,8 @@ public class Files
 	{
 		Log.i("Files","[ReadFile] Dentro ReadFiles :");				//DEBUG
 		
-		String url = path + name;
+		//String url = path + name;
+		
 		//String url= System.getProperty("file:///C:/") + name;
 		String smail = null;
 		
@@ -86,7 +87,7 @@ public class Files
 	public void SaveFile(String path, String name,String DataToSave) 
 	{
 		System.out.println("[saveFile]*********************************************************");
-		String url = path + name;
+	//	String url = path + name;
 	
 		
 		if(!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){

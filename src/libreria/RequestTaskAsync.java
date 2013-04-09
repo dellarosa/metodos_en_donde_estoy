@@ -1,4 +1,4 @@
-package metodos;
+package libreria;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

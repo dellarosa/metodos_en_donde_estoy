@@ -6,7 +6,7 @@ import java.util.Locale;
 
 import entities.wk.R;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
@@ -15,14 +15,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
-import java.io.IOException;
-import java.util.*;
-import android.widget.*;
+import libreria.CategoryPoints;
+
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.content.*;
 
-import domain.CategoryPoints;
+
 
 public class ScreenMap  extends android.support.v4.app.FragmentActivity{
 

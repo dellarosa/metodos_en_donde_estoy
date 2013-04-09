@@ -1,19 +1,20 @@
-package metodos;
+package libreria;
 
 import java.util.ArrayList;
+
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-public class MetodosGrl {
+public class MetodosGral {
 
 	private Context mcontex;
 	private String TAG="MetodosGrl";
 	MetodosRequest metrequest;
 	
-	public MetodosGrl(Context mcontex)
+	public MetodosGral(Context mcontex)
 	{
 		this.mcontex=mcontex;
 	}

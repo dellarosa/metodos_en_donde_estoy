@@ -2,6 +2,8 @@ package domain;
 
 import java.util.ArrayList;
 
+import libreria.CategoryPoints;
+
 public class ResponseClass {
 	 
 	///############################ UPDATE LOCATION ############################################################3

@@ -1,4 +1,4 @@
-package domain;
+package libreria;
 
 public class Definiciones {
 

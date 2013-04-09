@@ -24,9 +24,9 @@ public class WelcomeActivity extends Activity {
 	//private TelephonyManager mTelManager = (TelephonyManager)this.getSystemService(TELEPHONY_SERVICE);
 
 	/** Called when the activity is first created. */
-	private String pathFiles="/CYS/";
-    private String strNameFileTime="cystime.txt";
-	private Files objFiles = new Files();
+	//private String pathFiles="/CYS/";
+  //  private String strNameFileTime="cystime.txt";
+	//private Files objFiles = new Files();
 	  
 	@Override
 	public void onCreate(Bundle savedInstanceState) 
