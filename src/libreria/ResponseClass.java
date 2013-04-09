@@ -107,7 +107,8 @@ public class ResponseClass {
 	{
 		private String message;
     	private int code;
-    	private ArrayList<String> Category;
+    	private ArrayList<Categoria> categorylist;
+    	
     	
     	public Response_actualizarCategoriasDisponibles()
     	{
@@ -131,13 +132,13 @@ public class ResponseClass {
     	{
     		this.code=code;
     	}
-    	public void setCategoryList(ArrayList<String> categ)
+    	public void setCategoryList(ArrayList<Categoria> categ)
     	{
-    		this.Category=categ;
+    		this.categorylist=categ;
     	}
-    	public ArrayList<String> getCategoryList()
+    	public ArrayList<Categoria> getCategoryList()
     	{
-    		return this.Category;
+    		return this.categorylist;
     	}
     	
 	}

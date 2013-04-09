@@ -28,17 +28,17 @@ public class MetodosGral {
 		//TODO ACTUALIZAR CATEGORIAS DISPONIBLES
 		SharedPreferences sharedvers = mcontex.getSharedPreferences("VERSION",Context.MODE_PRIVATE);
 		
-		ArrayList<String> categorias=metrequest.actualizarCategoriasDisponibles(sharedvers.getString("VERSION",null));
+		ArrayList<Categoria> categorias=metrequest.actualizarCategoriasDisponibles(sharedvers.getString("VERSION",null));
 		
 		if(categorias!=null)
 		{
 			SharedPreferences.Editor editorcat;
 			SharedPreferences sharedcategorias = mcontex.getSharedPreferences("categorias",Context.MODE_PRIVATE);
 		
-			for(String categ:categorias)
+			for(Categoria categ:categorias)
 			{ 
 				editorcat=sharedcategorias.edit();
-				editorcat.putString(categ, categ);
+				editorcat.putString(String.valueOf(categ.getCategoriaId()), categ.getNombreCategoria());
 			}
 		
 		}else

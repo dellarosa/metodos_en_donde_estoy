@@ -1,24 +1,33 @@
 package libreria;
 
 public class Categoria {
-	private String nombrecategoria;
-	private String devicecategoria;
+	private String name;
+	private String device;
+	private int id;
 	
 	
 	public String getNombreCategoria()
 	{
-		return this.nombrecategoria;
+		return this.name;
 	}
 	public void setNombreCategoria(String nomcategoria)
 	{
-		this.nombrecategoria=nomcategoria;
+		this.name=nomcategoria;
 	}
 	public String getNombredevice()
 	{
-		return this.devicecategoria;
+		return this.device;
 	}
 	public void setNombreDevice(String nomdevice)
 	{
-		this.devicecategoria=nomdevice;
+		this.device=nomdevice;
+	}
+	public void setCategoriaId(int idcategoria)
+	{
+		this.id=idcategoria;
+	}
+	public int getCategoriaId()
+	{
+		return this.id;
 	}
 }

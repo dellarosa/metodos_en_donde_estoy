@@ -8,12 +8,17 @@ public class CategoryPoints {
 	private Date update_at;
 	private String categoryname;
 	private String categorydevice;
-	private Categoria categoria;
+	//private Categoria categoria;
 	
+	/*
 	public Categoria getCategoria()
 	{
 		return this.categoria;
 	}
+	public void setCategoria(Categoria categoria)
+	{
+		this.categoria=categoria;
+	}*/
 	public void setLatitud(double lat)
 	{
 		this.latitud=lat;

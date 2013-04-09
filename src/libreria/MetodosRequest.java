@@ -82,6 +82,8 @@ public class MetodosRequest {
         return boresponse;		//Podria devolver un objeto de determinada clase
 	}
 	///########################################## CREATE ################################################################///
+	//
+	//################################################################################################################
 	public boolean crearNuevoDevice(String namedevice,String categoria )		//PUEDE SER Q ENVIE OBJETOS 
 	{			    			   	 
    		final Gson gson = new Gson();
@@ -128,7 +130,9 @@ public class MetodosRequest {
         return boresponse;		//Podria devolver un objeto de determinada clase
 	}
 	///######################################## NEAR LOCATION ##################################################################///	
-    public ArrayList<CategoryPoints> obtenerLocacionesCercanas(Gps gpsloc)
+	//
+	//############################################################################################################
+	public ArrayList<CategoryPoints> obtenerLocacionesCercanas(Gps gpsloc)
     {
     	try
 		{   
@@ -184,7 +188,9 @@ public class MetodosRequest {
 		return null;
 	}
   ///############################################## UPDATE LOCATION ############################################################///
-    public boolean actualizarPosicion(Gps gpsloc)
+	//
+	//############################################################################################################
+	public boolean actualizarPosicion(Gps gpsloc)
     {
     	try
 		{   
@@ -241,7 +247,9 @@ public class MetodosRequest {
 	}
    
     ///######################################### ACTUALIZAR CATEGORIAS DISPONIBLES #################################################################///
-    public ArrayList<String> actualizarCategoriasDisponibles(String strversion)
+	//
+	//############################################################################################################
+	public ArrayList<Categoria> actualizarCategoriasDisponibles(String strversion)
     {
     	
     	try
@@ -293,6 +301,8 @@ public class MetodosRequest {
 	
     
   ///######################################### WAIT RESPONSE #################################################################///
+	//
+	//############################################################################################################
 	public boolean waitResponse(int inseconds)
 	{
 		new CountDownTimer(inseconds*1000, 1000) {
