@@ -2,7 +2,7 @@ package libreria;
 
 public class Categoria {
 	private String name;
-	private String device;
+	private String description;
 	private int id;
 	
 	
@@ -16,11 +16,11 @@ public class Categoria {
 	}
 	public String getNombredevice()
 	{
-		return this.device;
+		return this.description;
 	}
 	public void setNombreDevice(String nomdevice)
 	{
-		this.device=nomdevice;
+		this.description=nomdevice;
 	}
 	public void setCategoriaId(int idcategoria)
 	{
