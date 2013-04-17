@@ -3,11 +3,12 @@ package libreria;
 import java.util.Date;
 
 public class CategoryPoints {
-	private double latitud;
-	private double longitud;
+	private double latitude;
+	private double longitude;
 	private Date update_at;
 	private String categoryname;
 	private String categorydevice;
+
 	//private Categoria categoria;
 	
 	/*
@@ -21,19 +22,19 @@ public class CategoryPoints {
 	}*/
 	public void setLatitud(double lat)
 	{
-		this.latitud=lat;
+		this.latitude=lat;
 	}
 	public double getLatitud()
 	{
-		return this.latitud;
+		return this.latitude;
 	}
 	public void setLongitud(double lon)
 	{
-		this.longitud=lon;
+		this.longitude=lon;
 	}
 	public double getLongitud()
 	{
-		return this.longitud;
+		return this.longitude;
 	}
 	public void setDate(Date updateat)
 	{

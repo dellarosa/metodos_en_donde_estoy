@@ -10,6 +10,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -40,9 +41,14 @@ public class RequestTaskAsync extends AsyncTask<String, String, String>{
         HttpClient httpclient = new DefaultHttpClient();
         HttpResponse response;
         String responseString = null;
+        Log.i(TAG, "[doInBackground] DATA TO SEND: "+uri[0]);		//DEBUG
         try {
+        	//HttpGet htget= new HttpGet();
+        	new BasicHttpParams();
+        	
             response = httpclient.execute(new HttpGet(uri[0]));
             StatusLine statusLine = response.getStatusLine();
+            Log.i(TAG, "[doInBackground] STATUS LINE OK" );		//DEBUG
             if(statusLine.getStatusCode() == HttpStatus.SC_OK){
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 response.getEntity().writeTo(out);
@@ -53,6 +59,7 @@ public class RequestTaskAsync extends AsyncTask<String, String, String>{
                 //Closes the connection.
                 response.getEntity().getContent().close();
                 Log.e(TAG, "[doInBackground] ErrorException IOEXCEPT" );		//DEBUG
+                //return null;
                 throw new IOException(statusLine.getReasonPhrase());
             }
         } catch (ClientProtocolException e) {
@@ -77,6 +84,7 @@ public class RequestTaskAsync extends AsyncTask<String, String, String>{
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         //Do anything with response..
+        
         
     }
 }

@@ -18,6 +18,9 @@ public class MetodosGral {
 	{
 		this.mcontex=mcontex;
 	}
+	public MetodosGral() {
+		// TODO Auto-generated constructor stub
+	}
 	//	/////////////////////////////////////////////////////////////////////////////////
 	///################################## ACTUALIZAR CATEGORIAS ####################################################
 	public boolean actualizarCategorias()
@@ -28,7 +31,7 @@ public class MetodosGral {
 		//TODO ACTUALIZAR CATEGORIAS DISPONIBLES
 		SharedPreferences sharedvers = mcontex.getSharedPreferences("VERSION",Context.MODE_PRIVATE);
 		
-		ArrayList<Categoria> categorias=metrequest.actualizarCategoriasDisponibles(sharedvers.getString("VERSION",null));
+		ArrayList<Categoria> categorias=metrequest.descargarCategoriasDisponibles(sharedvers.getString("VERSION",null));
 		
 		if(categorias!=null)
 		{
