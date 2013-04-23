@@ -7,7 +7,9 @@ public class Definiciones {
 		public final static int incantdigitosPass=8;
 		//public final static String servidor= "http://localhost:4000";
 		//public final static String servidor= "http://sharedpc.dnsalias.com:3001";
-		public final static String servidor= "http://190.16.186.133:3001";
+		
+		//public final static String servidor= "http://190.16.186.133:3001";
+		public final static String servidor= "http://192.168.0.28:3333";
 		//public static final String strversion="00.00.01";
 		/////////////////////////////////////////////////////
 		/////////CODIGOS DE RESPUESTA //////////////////////

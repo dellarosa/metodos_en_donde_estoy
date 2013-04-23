@@ -45,7 +45,8 @@ public class DondeEstoy extends Activity {
 		        		try
 		        		{
 		        			Log.i(TAG,"[onCreate] INTENT HOW TO USE");				//DEBUG
-		        			IntHow=new Intent(this.getApplicationContext(),Loggin.class);
+		        			//IntHow=new Intent(this.getApplicationContext(),Loggin.class);
+		        			IntHow=new Intent(this.getApplicationContext(),Testclass.class);
 		        		}catch(Exception exc)
 		        		{		        			
 		        			Log.e(TAG,"[onCreate] IntentHow Excp: "+exc);

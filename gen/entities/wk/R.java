@@ -299,32 +299,39 @@ containing a value of this type.
         public static final int btEnviarURL=0x7f040013;
         public static final int btMinimizar=0x7f040014;
         public static final int btMinimizarNear=0x7f040018;
+        public static final int bt_test_cargarcat=0x7f04001b;
+        public static final int bt_test_create=0x7f04001d;
+        public static final int bt_test_getnearloc=0x7f04001a;
+        public static final int bt_test_locbydev=0x7f04001e;
+        public static final int bt_test_loggin=0x7f040019;
+        public static final int bt_test_updateloc=0x7f04001c;
         public static final int btreintentar=0x7f040017;
         public static final int buscandocoord=0x7f040015;
         public static final int buttonEmpezarAhora=0x7f04000c;
-        public static final int buttonIngresar=0x7f04001b;
+        public static final int buttonIngresar=0x7f040021;
         public static final int buttonNewSearch=0x7f04000f;
         public static final int checkBoxNearLocation=0x7f04000b;
         public static final int checkBoxRastreo=0x7f04000a;
-        public static final int editTextTime=0x7f04001a;
+        public static final int editTextTime=0x7f040020;
         public static final int hybrid=0x7f040004;
         public static final int imageView1=0x7f040005;
         public static final int imageView2=0x7f040012;
         public static final int map=0x7f04000d;
-        public static final int menu_settings=0x7f04001c;
+        public static final int menu_settings=0x7f040022;
         public static final int none=0x7f040000;
         public static final int normal=0x7f040001;
         public static final int progressBar1=0x7f040016;
         public static final int satellite=0x7f040002;
         public static final int terrain=0x7f040003;
-        public static final int textViewSenderTime=0x7f040019;
+        public static final int textViewSenderTime=0x7f04001f;
     }
     public static final class layout {
         public static final int howtouse=0x7f030000;
         public static final int mapapoints=0x7f030001;
         public static final int servicecontrol=0x7f030002;
         public static final int servicenear=0x7f030003;
-        public static final int welcome=0x7f030004;
+        public static final int test=0x7f030004;
+        public static final int welcome=0x7f030005;
     }
     public static final class menu {
         public static final int activity_main=0x7f080000;

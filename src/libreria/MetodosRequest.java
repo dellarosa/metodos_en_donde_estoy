@@ -54,7 +54,7 @@ public class MetodosRequest {
         }
        try
        { 
-    	   this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);
+    	   CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
 	        if(objT.getResponse()==null)
 		   	 {
 		   		 Log.i(TAG, "[verificarUseryPass] RESPONSE NULL");		//DEBUG
@@ -90,8 +90,9 @@ public class MetodosRequest {
    		final Gson gson = new Gson();
    		//final String json = gson.toJson();
    		//String urlCatLoc = new String("http://sharedpc.dnsalias.com:3001/location_points/user=cepita@gmail.com&pass=2345pepe");
-   		String urlLoc = new String(Definiciones.Definicionesgenerales.servidor+"/devices/create.json?name="+namedevice+"&cat="+categoria);
-   		
+   		//String urlLoc = new String(Definiciones.Definicionesgenerales.servidor+"/devices/create.json?name="+namedevice+"&cat="+categoria);
+   		String urlLoc = new String(Definiciones.Definicionesgenerales.servidor+"/api/devices/create?name="+namedevice+"&cat="+categoria);		//INCOMPLETO
+   		//data: {name: "Garrahan", description: "Hospital de ninios", category_id: 1, type_id: 1} }) 	//INCOMPLETO
    		Log.i(TAG, "[crearNuevoDevice] ENVIAR URL: "+urlLoc );		//DEBUG
         try
         {
@@ -103,7 +104,7 @@ public class MetodosRequest {
         }
        try
        { 
-    	   this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);
+    	   CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
 	        if(objT.getResponse()==null)
 		   	 {
 		   		 Log.i(TAG, "[crearNuevoDevice] RESPONSE NULL");		//DEBUG
@@ -134,7 +135,7 @@ public class MetodosRequest {
 	///######################################## NEAR LOCATION ##################################################################///	
 	//
 	//############################################################################################################
-	public ArrayList<CategoryPoints> obtenerLocacionesCercanas(Gps gpsloc)
+	public ArrayList<CategoryPoints> obtenerLocacionesCercanas(Gps gpsloc,String strcategoria)
     {
     	try
 		{   
@@ -150,7 +151,8 @@ public class MetodosRequest {
 
 		   		//String urlCatLoc = new String("Definiciones.Definicionesgenerales.servidor/locations/find_near_locations?"+json);
 		   		//String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/locations/find_near_locations?id=000000000000003&lat=-34.593968&lng=-58.413882");
-		   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/location_points/near_location_points.json?lat="+gpsloc.getLatitud()+"&lng="+gpsloc.getLongitud());
+		   		//String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/location_points/near_location_points.json?lat="+gpsloc.getLatitud()+"&lng="+gpsloc.getLongitud()+"&strcategoria");
+		   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/api/locations/find_near_locations/"+gpsloc.getLatitud()+"/"+gpsloc.getLongitud()+"/"+strcategoria);
 		   		
 		   		Log.i(TAG, "[obtenerLocacionesCercanas] ENVIAR URL: "+urlCatLoc );		//DEBUG
 		        try
@@ -161,7 +163,7 @@ public class MetodosRequest {
 		        	Log.i(TAG, "[obtenerLocacionesCercanas] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
 		        	return null;
 		        }	      
-		        this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio); 	
+		        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR 	
 		    	 if(objT.getResponse()==null)
 		    	 {
 		    		 Log.i(TAG, "[obtenerLocacionesCercanas] RESPONSE NULL");		//DEBUG
@@ -191,6 +193,69 @@ public class MetodosRequest {
 		}
 		return null;
 	}
+	
+	///######################################## OBTIENE ULTIMO BY DISPOSITIVO ##################################################################///	
+	//
+	//############################################################################################################
+	public LocationPointDate obtenerLocationPorDispositivo(String dispositivo)
+    {
+		Log.i(TAG, "[obtenerLocationPorDispositivo] DENTRO");							//DEBUG
+		
+    	try
+		{   
+			if(dispositivo!=null)
+			{
+				Log.i(TAG, "[obtenerLocationPorDispositivo] HAY LATITUD Y/O LONGITUD");							//DEBUG
+		   			    			   	 
+		   		final Gson gson = new Gson();	    			   		
+		   		//Gps objGps=new Gps("AndCYS",dbLat,dbLon,dbAlt,flSpeed,Imei,settings.getString("CodeActiv",null),strLevelbat);
+	   				   		
+		   		//final String json = gson.toJson(gpsloc); 
+		   		
+		   		//String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/location_points/near_location_points.json?lat="+gpsloc.getLatitud()+"&lng="+gpsloc.getLongitud()+"&strcategoria");
+		   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/api/locations/"+dispositivo+"/get_location");
+		   		
+		   		Log.i(TAG, "[obtenerLocationPorDispositivo] ENVIAR URL: "+urlCatLoc );		//DEBUG
+		        try
+		        {
+		        	objT = (RequestTaskAsync) new RequestTaskAsync().execute(urlCatLoc);
+		        }catch(Exception ex)
+		        {
+		        	Log.i(TAG, "[obtenerLocationPorDispositivo] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
+		        	return null;
+		        }	      
+		        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR 	
+		    	 if(objT.getResponse()==null)
+		    	 {
+		    		 Log.i(TAG, "[obtenerLocationPorDispositivo] RESPONSE NULL");		//DEBUG
+		    		 objT.cancel(true);
+		    		 return null;
+		    	 }else		//////////////OBTUVE RESPUESTA DE ENVIO... CATEGORIAS ...
+		    	 {		    		    		 
+		    		 Log.i(TAG, "[obtenerLocationPorDispositivo] RESPONSE : "+objT.getResponse());		//DEBUG
+		    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		    		 ///TODO: CATEGORYLocation deberian ser dos clases, pero todavia no probe el gson para dos objetos uno dentro de otro FD v15.3.13
+	    			    			
+		    		 Response_ObtenerLocacionDispositivo locbydevice = gson.fromJson(objT.getResponse(), Response_ObtenerLocacionDispositivo.class);
+	    			
+		    		if(locbydevice.getCode()==Definiciones.Definicionesgenerales.SUCCESS)
+		    		{    				    			
+		    			return locbydevice.getLocationPointDate();
+		    		}
+		    		return null;	    			
+		    	 }
+			}else
+			{
+				Log.i(TAG, "[obtenerLocationPorDispositivo] NO HAY COORDENADADS PARA ENVIAR ");		//DEBUG				
+			}
+		}catch(RuntimeException ex)
+		{
+			Log.e(TAG, "[obtenerLocationPorDispositivo] Exploto todo: "+ex );		//DEBUG
+		}
+		return null;
+	}
+	
+	
   ///############################################## UPDATE LOCATION ############################################################///
 	//
 	//############################################################################################################
@@ -222,7 +287,7 @@ public class MetodosRequest {
 		        	Log.i(TAG, "[updateLocation] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
 		        	return false;
 		        }	      
-		        this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);
+		        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
 		    	 if(objT.getResponse()==null)
 		    	 {
 		    		 Log.i(TAG, "[updateLocation] RESPONSE NULL");		//DEBUG
@@ -264,8 +329,9 @@ public class MetodosRequest {
 		   		//final String json = gson.toJson(gpsloc); 
 		   		strversion="01.01";
 		   		//TODO ARMAR url de envio para actualizar
-		   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/categorias_disponibles/categorias_disponibles.json?vers="+strversion);
-		   		
+		   		//String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/categorias_disponibles/categorias_disponibles.json?vers="+strversion);
+		   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/api/locations/get_all_categories");
+		   			
 		   		Log.i(TAG, "[actualizarCategoriasDisponibles] ENVIAR URL: "+urlCatLoc );		//DEBUG
 		        try
 		        {
@@ -277,9 +343,8 @@ public class MetodosRequest {
 		        	Log.i(TAG, "[actualizarCategoriasDisponibles] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
 		        	return null;
 		        }	      
-		         this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	
-		    	 if(objT.getResponse()==null)
-		       //  if(reqsync.Request(urlCatLoc)==null)
+		        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR	
+		    	 if(objT.getResponse()==null)		      
 		    	 {
 		    		 Log.i(TAG, "[actualizarCategoriasDisponibles] RESPONSE NULL");		//DEBUG
 		    		 objT.cancel(true);
@@ -307,12 +372,66 @@ public class MetodosRequest {
 	}
 	
     
+	 ///######################################### ACTUALIZAR TIPOS DISPONIBLES #################################################################///
+		//
+		//############################################################################################################
+		public ArrayList<Categoria> descargarTiposDisponibles(String strversion)
+	    {
+	    	
+	    	try
+			{   
+			   		final Gson gson = new Gson();
+			   		//final String json = gson.toJson(gpsloc); 
+			   		strversion="01.01";
+			   		//TODO ARMAR url de envio para actualizar
+			   		//String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/categorias_disponibles/categorias_disponibles.json?vers="+strversion);
+			   		String urlCatLoc = new String(Definiciones.Definicionesgenerales.servidor+"/api/locations/get_all_types");
+			   			
+			   		Log.i(TAG, "[descargarTiposDisponibles] ENVIAR URL: "+urlCatLoc );		//DEBUG
+			        try
+			        {
+			        	objT = (RequestTaskAsync) new RequestTaskAsync().execute(urlCatLoc);
+			        	
+			        	
+			        }catch(Exception ex)
+			        {
+			        	Log.i(TAG, "[descargarTiposDisponibles] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
+			        	return null;
+			        }	      
+			        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR	
+			    	 if(objT.getResponse()==null)		      
+			    	 {
+			    		 Log.i(TAG, "[descargarTiposDisponibles] RESPONSE NULL");		//DEBUG
+			    		 objT.cancel(true);
+			    		 return null;
+			    	 }else		//////////////OBTUVE RESPUESTA DE ENVIO... CATEGORIAS ...
+			    	 {		    		    		 
+			    		 Log.i(TAG, "[descargarTiposDisponibles] RESPONSE : "+objT.getResponse());		//DEBUG
+			    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			    		 ///TODO: Corregir	    			    			
+			    		 Response_actualizarTiposDisponibles tiposdisplist = gson.fromJson(objT.getResponse(), Response_actualizarTiposDisponibles.class);
+		    			
+		    			if(tiposdisplist.getCode()==Definiciones.Definicionesgenerales.SUCCESS)
+		    			{
+		    				//return tiposdisplist.getCategoryList();	///TODO return tipos disponibles
+		    			}else
+		    			{
+		    				Log.i(TAG,"[descargarTiposDisponibles] NO HAY CATEGORIAS DISPONIBLES");	    				
+		    			}	    			
+			    	 }			
+			}catch(Exception ex)
+			{
+				Log.e(TAG, "[Handler] Exploto todo: "+ex );		//DEBUG
+			}
+			return null;
+		}
+		
   ///######################################### WAIT RESPONSE #################################################################///
 	//
 	//############################################################################################################
-	public boolean waitResponse(int inseconds)
+	public CountDownTimer waitResponse(int inseconds)
 	{
-		new CountDownTimer(inseconds*1000, 1000) {
+		CountDownTimer objcount=new CountDownTimer(inseconds*1000, 1000) {
 		     public void onTick(long millisUntilFinished) {			    		         
 		         Log.i(TAG, "[waitResponse] ONTICK: "+millisUntilFinished/1000);		//DEBUG
 		     }
@@ -322,6 +441,6 @@ public class MetodosRequest {
 		     }
 		  }.start();
 		  
-		  return true;
+		  return objcount;
 	}
 }

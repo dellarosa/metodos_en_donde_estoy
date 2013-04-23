@@ -99,8 +99,48 @@ public class ResponseClass {
 		{
 			this.CategoryPoints=catpoints;
 		}
-		
-
+	}
+	
+	///############################ LOCACION POR DISPOSITIVO ############################################################3
+	
+	public class Response_ObtenerLocacionDispositivo
+	{
+		private String message;
+    	private int code;
+    	private LocationPointDate locpointdate;
+    	
+    	
+    	public Response_ObtenerLocacionDispositivo()
+    	{
+    		
+    	}
+    	
+    	public String getMessage()
+    	{
+    		return this.message;
+    		
+    	}
+    	public int getCode()
+    	{
+    		return this.code;
+    	}
+    	public void setMessage(String msg)
+    	{
+    		this.message=msg;
+    	}
+    	public void setCode(int code)
+    	{
+    		this.code=code;
+    	}
+    	public void setLocationPointDate(LocationPointDate locpointdate)
+    	{
+    		this.locpointdate=locpointdate;
+    	}
+    	public LocationPointDate getLocationPointDate()
+    	{
+    		return this.locpointdate;
+    	}
+    	
 	}
 	///############################ CATEGORY UPDATE ############################################################3
 	public class Response_actualizarCategoriasDisponibles
@@ -142,6 +182,42 @@ public class ResponseClass {
     	}
     	
 	}
+	
+	///############################ TIPOS DISPONIBLES -UPDATE TIPOS ############################################################3
+	public class Response_actualizarTiposDisponibles
+	{
+		private String message;
+    	private int code;
+
+    	
+    	
+    	public Response_actualizarTiposDisponibles()
+    	{
+    		
+    	}
+    	
+    	public String getMessage()
+    	{
+    		return this.message;
+    		
+    	}
+    	public int getCode()
+    	{
+    		return this.code;
+    	}
+    	public void setMessage(String msg)
+    	{
+    		this.message=msg;
+    	}
+    	public void setCode(int code)
+    	{
+    		this.code=code;
+    	}
+    	///TODO: TIPOS DISPONIBLES
+	}	
+	
+	
+	
 	///############################ UPDATE YES OR NOT ############################################################3
 	public class Response_crearNuevoDevice
 	{
