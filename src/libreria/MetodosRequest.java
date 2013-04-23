@@ -2,6 +2,8 @@ package libreria;
 
 import java.util.ArrayList;
 
+import org.json.JSONObject;
+
 import libreria.ResponseClass.*;
 
 import android.os.CountDownTimer;
@@ -17,7 +19,7 @@ public class MetodosRequest {
 	RequestTaskAsync objT;
 	boolean TimerState;
 	boolean boresponse=false;
-	
+	boolean botermine;
 	public void setBooleanResponse(boolean response)
 	{
 		this.boresponse=response;
@@ -54,7 +56,12 @@ public class MetodosRequest {
         }
        try
        { 
-    	   CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
+	        ////////
+	        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
+	        while((!botermine)&&(objT.getResponse()==null))
+	        {  	;      }
+	        ////////
+	        
 	        if(objT.getResponse()==null)
 		   	 {
 		   		 Log.i(TAG, "[verificarUseryPass] RESPONSE NULL");		//DEBUG
@@ -104,7 +111,12 @@ public class MetodosRequest {
         }
        try
        { 
-    	   CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
+	        ////////
+	        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
+	        while((!botermine)&&(objT.getResponse()==null))
+	        {  	;      }
+	        ////////
+	        
 	        if(objT.getResponse()==null)
 		   	 {
 		   		 Log.i(TAG, "[crearNuevoDevice] RESPONSE NULL");		//DEBUG
@@ -163,7 +175,13 @@ public class MetodosRequest {
 		        	Log.i(TAG, "[obtenerLocacionesCercanas] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
 		        	return null;
 		        }	      
-		        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR 	
+		        
+		        ////////
+		        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
+		        while((!botermine)&&(objT.getResponse()==null))
+		        {  	;      }
+		        ////////
+		        
 		    	 if(objT.getResponse()==null)
 		    	 {
 		    		 Log.i(TAG, "[obtenerLocacionesCercanas] RESPONSE NULL");		//DEBUG
@@ -197,10 +215,9 @@ public class MetodosRequest {
 	///######################################## OBTIENE ULTIMO BY DISPOSITIVO ##################################################################///	
 	//
 	//############################################################################################################
-	public LocationPointDate obtenerLocationPorDispositivo(String dispositivo)
+	public LocationPointDate obtenerLocationPorDevice(String dispositivo)
     {
-		Log.i(TAG, "[obtenerLocationPorDispositivo] DENTRO");							//DEBUG
-		
+				
     	try
 		{   
 			if(dispositivo!=null)
@@ -223,15 +240,21 @@ public class MetodosRequest {
 		        {
 		        	Log.i(TAG, "[obtenerLocationPorDispositivo] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
 		        	return null;
-		        }	      
-		        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR 	
-		    	 if(objT.getResponse()==null)
+		        }
+		        botermine=false;
+		        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
+		        while((!botermine)&&(objT.getResponse()==null))
+		        {
+		        	;
+		        }
+		        	
+		        if(objT.getResponse()==null)
 		    	 {
 		    		 Log.i(TAG, "[obtenerLocationPorDispositivo] RESPONSE NULL");		//DEBUG
 		    		 objT.cancel(true);
 		    		 return null;
 		    	 }else		//////////////OBTUVE RESPUESTA DE ENVIO... CATEGORIAS ...
-		    	 {		    		    		 
+		    	 {	 objContTime.cancel();	    		    		 
 		    		 Log.i(TAG, "[obtenerLocationPorDispositivo] RESPONSE : "+objT.getResponse());		//DEBUG
 		    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		    		 ///TODO: CATEGORYLocation deberian ser dos clases, pero todavia no probe el gson para dos objetos uno dentro de otro FD v15.3.13
@@ -287,7 +310,11 @@ public class MetodosRequest {
 		        	Log.i(TAG, "[updateLocation] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
 		        	return false;
 		        }	      
+		        ////////
 		        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
+		        while((!botermine)&&(objT.getResponse()==null))
+		        {  	;      }
+		        ////////
 		    	 if(objT.getResponse()==null)
 		    	 {
 		    		 Log.i(TAG, "[updateLocation] RESPONSE NULL");		//DEBUG
@@ -343,22 +370,46 @@ public class MetodosRequest {
 		        	Log.i(TAG, "[actualizarCategoriasDisponibles] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
 		        	return null;
 		        }	      
-		        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR	
-		    	 if(objT.getResponse()==null)		      
+		        	
+		        //////
+		        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
+		        while((!botermine)&&(objT.getResponse()==null))
+		        {     	;       } 
+		        //////
+		        
+		        if(objT.getResponse()==null)		      
 		    	 {
 		    		 Log.i(TAG, "[actualizarCategoriasDisponibles] RESPONSE NULL");		//DEBUG
 		    		 objT.cancel(true);
 		    		 return null;
+		    		 //Response_actualizarCategoriasDisponibles categoriaslist;//SI SE REQUIERE QUE NO TENGA UN WHILE, LE ENVIO UNA REFERENCIA AL OBJETO categorialist que lo van a pullear hasta que este lleno.
+		    		 
 		    	 }else		//////////////OBTUVE RESPUESTA DE ENVIO... CATEGORIAS ...
-		    	 {		    		    		 
+		    	 {		
+		    		 objContTime.cancel();
 		    		 Log.i(TAG, "[actualizarCategoriasDisponibles] RESPONSE : "+objT.getResponse());		//DEBUG
 		    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		    		 ///TODO: Corregir	    			    			
-		    		 Response_actualizarCategoriasDisponibles categoriaslist = gson.fromJson(objT.getResponse(), Response_actualizarCategoriasDisponibles.class);
+		    		 ///TODO: Corregir
+		    		 //Type collectionType = new TypeToken<Collection<channelSearchEnum>>(){}.getType();
+		    		 JSONObject jsonObject;
+		    		 jsonObject = new JSONObject(objT.getResponse());
+		    		 
+		    		 //Response_actualizarCategoriasDisponibles categoriaslist = gson.fromJson(objT.getResponse(), Response_actualizarCategoriasDisponibles.class);
+		    		 Response_actualizarCategoriasDisponibles categoriaslist = gson.fromJson(jsonObject.toString(), Response_actualizarCategoriasDisponibles.class);
 	    			
-	    			if(categoriaslist.getCode()==Definiciones.Definicionesgenerales.SUCCESS)
+		    		 Log.i(TAG,"[actualizarCategoriasDisponibles] CODIGO RESP: "+categoriaslist.code);
+	    			//if(categoriaslist.getCode()==Definiciones.Definicionesgenerales.SUCCESS)
+		    		 if(true)
 	    			{
-	    				return categoriaslist.getCategoryList();
+	    				Log.i(TAG,"[actualizarCategoriasDisponibles] CODIGO SUCCESS");			//
+	    				int x=0;
+	    				
+	    				/*while(x<categoriaslist.categories.length)
+	    				{
+	    					Log.i(TAG,"[actualizarCategoriasDisponibles] NOMBRECAT: "+categoriaslist.categories[x].name);
+	    					x++;
+	    				}*/
+	    				//return categoriaslist.getCategoryList();
 	    			}else
 	    			{
 	    				Log.i(TAG,"[actualizarCategoriasDisponibles] NO HAY CATEGORIAS DISPONIBLES");	    				
@@ -398,7 +449,13 @@ public class MetodosRequest {
 			        	Log.i(TAG, "[descargarTiposDisponibles] REQUEST EXCEPTION: "+ex );		//DEBUG		        	
 			        	return null;
 			        }	      
-			        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR	
+			        
+			        ////////
+			        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
+			        while((!botermine)&&(objT.getResponse()==null))
+			        {  	;      }
+			        ////////
+			        
 			    	 if(objT.getResponse()==null)		      
 			    	 {
 			    		 Log.i(TAG, "[descargarTiposDisponibles] RESPONSE NULL");		//DEBUG
@@ -437,7 +494,7 @@ public class MetodosRequest {
 		     }
 		     public void onFinish() {
 		    	 Log.i(TAG, "[waitResponse] TIMER DONE");		//DEBUG
-		    	 
+		    	 botermine=true;
 		     }
 		  }.start();
 		  

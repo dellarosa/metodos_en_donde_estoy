@@ -1,5 +1,8 @@
 package entities.wk;
 
+import java.util.ArrayList;
+
+import libreria.Categoria;
 import libreria.Gps;
 import libreria.MetodosGral;
 import libreria.MetodosRequest;
@@ -65,8 +68,17 @@ public class Testclass extends Activity{
 				public void onClick(View v) {
 					try
 					{
-						metreq.descargarCategoriasDisponibles("00001");
-						
+						ArrayList<Categoria> categorias= metreq.descargarCategoriasDisponibles("00001");
+						if(categorias!=null)
+						{
+							for(Categoria categ:categorias)								
+							{
+								Log.i(TAG,"[onClick] CATEGORIA "+categ.getCategoriaId()+" : "+categ.getNombreCategoria());
+							}
+						}else
+						{
+							Log.i(TAG,"[onClick] Categorias null");
+						}
 					}catch(RuntimeException e)
 					{
 						Log.i(TAG,"[onClick] Exception Cargar Categ: "+e);
@@ -130,7 +142,7 @@ public class Testclass extends Activity{
 						try
 						{
 							Log.i(TAG,"[onClick] OBTENER LOC DEVICE");
-							metreq.obtenerLocationPorDispositivo("celularpepe");
+							metreq.obtenerLocationPorDevice("lo de juan");
 						}catch(Exception e)
 						{
 							Log.i(TAG,"[onClick] Exception Loc by Dev: "+e.getMessage());

@@ -1,10 +1,14 @@
 package libreria;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Categoria {
-	private String name;
-	private String description;
+	@SerializedName("id")
 	private int id;
-	
+	@SerializedName("name")
+	private String name;
+	@SerializedName("description")
+	private String description;
 	
 	public String getNombreCategoria()
 	{

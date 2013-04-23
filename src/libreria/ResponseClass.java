@@ -2,6 +2,8 @@ package libreria;
 
 import java.util.ArrayList;
 
+import com.google.gson.annotations.SerializedName;
+
 
 public class ResponseClass {
 	 
@@ -145,42 +147,21 @@ public class ResponseClass {
 	///############################ CATEGORY UPDATE ############################################################3
 	public class Response_actualizarCategoriasDisponibles
 	{
-		private String message;
-    	private int code;
-    	private ArrayList<Categoria> categorylist;
-    	
-    	
-    	public Response_actualizarCategoriasDisponibles()
-    	{
-    		
-    	}
-    	
-    	public String getMessage()
-    	{
-    		return this.message;
-    		
-    	}
-    	public int getCode()
-    	{
-    		return this.code;
-    	}
-    	public void setMessage(String msg)
-    	{
-    		this.message=msg;
-    	}
-    	public void setCode(int code)
-    	{
-    		this.code=code;
-    	}
-    	public void setCategoryList(ArrayList<Categoria> categ)
-    	{
-    		this.categorylist=categ;
-    	}
-    	public ArrayList<Categoria> getCategoryList()
-    	{
-    		return this.categorylist;
-    	}
-    	
+		@SerializedName("categories")
+		public Categories[] categories;
+		
+		public class Categories
+		{		@SerializedName("id")
+				public int id;
+				@SerializedName("name")
+				public String name;
+				@SerializedName("description")
+				public String description;
+			
+		}
+				
+		@SerializedName("code")
+		public int code;
 	}
 	
 	///############################ TIPOS DISPONIBLES -UPDATE TIPOS ############################################################3
