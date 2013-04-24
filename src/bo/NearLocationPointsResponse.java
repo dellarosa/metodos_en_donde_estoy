@@ -1,16 +1,6 @@
-package bo;
+package edu.palermo.dondeestoy.bo;
 
-public class NearLocationPointsResponse {
-
-	private String code;
-	
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
+public class NearLocationPointsResponse extends BaseResponse{
 
 	private LocationPoint[] list = null;
 	
