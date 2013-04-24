@@ -28,4 +28,17 @@ public class Requestclass {
 		
 		
 	}
+	
+	///############################ CREAR NUEVO DEVICE ############################################################3
+		public class Request_CrearNuevoDeviceCategory
+	    {
+	    	
+	    	public Request_CrearNuevoDeviceCategory()
+	    	{
+	    		
+	    	}
+	    	
+	    	
+	    }
+		
 }

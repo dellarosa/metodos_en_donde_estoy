@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -134,9 +135,7 @@ public class ApiService {
 		 
 		uplocation.setLatitude(latitude);
 		uplocation.setLongitude(longitude);
-		
-        variables.put("latitude", String.valueOf(latitude));
-        variables.put("longitude", String.valueOf(longitude));
+		        
              
 		HttpHeaders requestHeaders = new HttpHeaders();
 		//requestHeaders.setAccept(Collections.singletonList(new MediaType("application","json")));
@@ -147,8 +146,8 @@ public class ApiService {
 		
 		
 		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new GsonHttpMessageConverter());
-		
+		//restTemplate.getMessageConverters().add(new GsonHttpMessageConverter());
+		restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
 		
 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
 		
@@ -158,7 +157,7 @@ public class ApiService {
 		//String url = "http://192.168.0.28:3333/api/devices/"+id+"/update_location";
 		String url = "http://192.168.0.28:3333/api/devices/1/update_location";
 		
-		String response = restTemplate.postForObject(url, uplocation, String.class);
+		String response = restTemplate.postForObject(url, parts, String.class);
 		//String response = restTemplate.postForObject(url, parts, String.class);
 		
 		Log.i("updatelocation","UPDATE RESPONSE:" +response);
