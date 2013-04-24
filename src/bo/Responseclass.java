@@ -1,11 +1,12 @@
-package libreria;
+package bo;
 
 import java.util.ArrayList;
+
 
 import com.google.gson.annotations.SerializedName;
 
 
-public class ResponseClass {
+public class Responseclass {
 	 
 	///############################ ACTUALIZAR POSICION - UPDATE LOCATION ############################################################3
 	public class Response_actualizarPosicion
@@ -65,120 +66,99 @@ public class ResponseClass {
     		this.code=code;
     	}
     }
-
-	///############################ POSICIONES CERCANAS - NEAR LOCATION ############################################################3
-	public class Response_obtenerLocacionesCercanas {
-		
-		private String message;
-		private int code;
-		private ArrayList<CategoryPoints> CategoryPoints;
-		
-		public Response_obtenerLocacionesCercanas()
-		{
-			
-		}
-		public void setMessage(String msg)
-		{
-			this.message=msg;
-		}
-		public String getMessage()
-		{
-			return this.message;
-		}
-		public void setCode(int code)
-		{
-			this.code=code;
-		}
-		public int getCode()
-		{
-			return this.code;
-		}
-		public ArrayList<CategoryPoints> getCategoryPoints()
-		{
-			return this.CategoryPoints;
-		}
-		public void setCategoryPoints(ArrayList<CategoryPoints> catpoints)
-		{
-			this.CategoryPoints=catpoints;
-		}
-	}
 	
-	///############################ LOCACION POR DISPOSITIVO ############################################################3
+	///TESTEADO OK - Modificar server############################ LOCACION POR DISPOSITIVO ############################################################3
 	
-	public class Response_ObtenerLocacionDispositivo
+	public class Response_GetLocacionDevice
 	{
-		private String message;
-    	private int code;
-    	private LocationPointDate locpointdate;
+		
+		//private String message;
+		@SerializedName("code")
+    	private String code;
+		@SerializedName("location_point")
+    	private LocationPointDate location_point;
     	
     	
-    	public Response_ObtenerLocacionDispositivo()
+    	public Response_GetLocacionDevice()
     	{
     		
     	}
     	
-    	public String getMessage()
+    	/*public String getMessage()
     	{
     		return this.message;
     		
-    	}
-    	public int getCode()
-    	{
-    		return this.code;
     	}
     	public void setMessage(String msg)
     	{
     		this.message=msg;
     	}
-    	public void setCode(int code)
+    	*/
+    	public String getCode()
+    	{
+    		return this.code;
+    	}
+    	
+    	public void setCode(String code)
     	{
     		this.code=code;
     	}
-    	public void setLocationPointDate(LocationPointDate locpointdate)
+    	public void setLocationPointDate(LocationPointDate location_point)
     	{
-    		this.locpointdate=locpointdate;
+    		this.location_point=location_point;
     	}
     	public LocationPointDate getLocationPointDate()
     	{
-    		return this.locpointdate;
+    		return this.location_point;
     	}
     	
 	}
-	///############################ CATEGORY UPDATE ############################################################3
-	public class Response_actualizarCategoriasDisponibles
+	///TESTEADO OK ############################ CATEGORY UPDATE ############################################################3
+	public class Response_CategoriasDisponibles
 	{
-		public Response_actualizarCategoriasDisponibles()
+		public Response_CategoriasDisponibles()
 		{}
-		public Response_actualizarCategoriasDisponibles(Categoria[] categories,int code)
+		public Response_CategoriasDisponibles(Category[] categories,String code)
 		{
 			this.code=code;
 			this.categories=categories;
 		}
 		
 		@SerializedName("categories")
-		public Categoria[] categories;						
+		public Category[] categories;						
 		@SerializedName("code")
-		public int code;
+		public String code;
 		
-		public int getCode()
+		public String getCode()
 		{
 			return this.code;
 		}
-		public Categoria[] getCategorias()
+		public Category[] getCategorias()
 		{
 			return this.categories; 	
 		}
 	}
 	
 	///############################ TIPOS DISPONIBLES -UPDATE TIPOS ############################################################3
-	public class Response_actualizarTiposDisponibles
+	public class Response_TiposDisponibles
 	{
+		@SerializedName("id")
 		private String message;
+		@SerializedName("code")
     	private int code;
+		@SerializedName("types")
+    	private Types[] types;
+    	
+    	
+    	public Types[] getTypes() {
+			return types;
+		}
 
-    	
-    	
-    	public Response_actualizarTiposDisponibles()
+		public void setTypes(Types[] types) {
+			this.types = types;
+		}
+
+		public Response_TiposDisponibles()
     	{
     		
     	}

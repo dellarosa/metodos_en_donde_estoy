@@ -31,9 +31,9 @@ public class MetodosGral {
 		//TODO ACTUALIZAR CATEGORIAS DISPONIBLES
 		SharedPreferences sharedvers = mcontex.getSharedPreferences("VERSION",Context.MODE_PRIVATE);
 		
-		ArrayList<Categoria> categorias=metrequest.descargarCategoriasDisponibles(sharedvers.getString("VERSION",null));
+	//	Categoria[] categorias=metrequest.descargarCategoriasDisponibles(sharedvers.getString("VERSION",null));
 		
-		if(categorias!=null)
+	/*	if(categorias!=null)
 		{
 			SharedPreferences.Editor editorcat;
 			SharedPreferences sharedcategorias = mcontex.getSharedPreferences("categorias",Context.MODE_PRIVATE);
@@ -41,7 +41,7 @@ public class MetodosGral {
 			for(Categoria categ:categorias)
 			{ 
 				editorcat=sharedcategorias.edit();
-				editorcat.putString(String.valueOf(categ.getCategoriaId()), categ.getNombreCategoria());
+				editorcat.putString(String.valueOf(categ.getCategoriaId()), categ.getName());
 			}
 		
 		}else
@@ -49,7 +49,9 @@ public class MetodosGral {
 			Log.i(TAG,"[onCreate] Nuevas CATEGORIAS NULL");
 			return false;
 		}
+		*/
 		return true;
+		
 	}
 	
 	///####################################################### GET DEVICE ID - IMEI ################################

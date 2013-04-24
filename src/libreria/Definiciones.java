@@ -19,5 +19,14 @@ public class Definiciones {
 		public final static int ERROR=999;
 		public final static int DEVICE_NOT_FOUND=405;
 		public final static int tiempoesperaenvio=5;
+		
+		
+		
+	}
+	public class Transacciones
+	{
+		public final static int actualizacioncategorias=0x00;
+		public final static int verificarlogin=0x01;
+		public final static int creardevice=0x02;
 	}
 }

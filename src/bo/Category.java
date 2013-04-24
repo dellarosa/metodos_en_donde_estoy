@@ -1,8 +1,8 @@
-package libreria;
+package bo;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Categoria {
+public class Category {
 	@SerializedName("id")
 	private int id;
 	@SerializedName("name")

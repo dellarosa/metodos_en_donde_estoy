@@ -108,7 +108,7 @@ public class Loggin extends Activity {
 							
 							//TODO HACER LOGIN - ENVIAR GETREQUEST AL SERVIDOR
 							
-							if(metreq.verificarUseryPass(etxUser.getText().toString(),etxPass.getText().toString(),metgrl.getDeviceID()))									    					
+						/*	if(metreq.verificarUseryPass(etxUser.getText().toString(),etxPass.getText().toString(),metgrl.getDeviceID()))									    					
 							{  //  editor.putString("CodeActiv",fnlstrCodeAct  );		//FD v19.3.13				    					
 							    editor.putString("Imei",metgrl.getDeviceID());
 							    editor.putString("User",etxUser.getText().toString());
@@ -145,6 +145,7 @@ public class Loggin extends Activity {
 							{
 								Log.i(TAG,"[onCreate]USUARIO NO EXISTE, O NO SE PUEDE CONECTAR O MAL INGRESO DE DATOS...");		//TODO discernir si se quiere estandarizar el error		
 							}
+							*/
 				   		}else
 				   		{
 				   			

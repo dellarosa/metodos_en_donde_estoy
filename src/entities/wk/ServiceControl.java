@@ -101,7 +101,7 @@ public class ServiceControl extends Activity  implements Runnable
     			{				
     				///TODO OBTENER COORDENADAS PARA ENVIAR AL SERVIDOR
     				MetodosRequest metrequest=new MetodosRequest();
-    				Collection<CategoryPoints> colcatloc=metrequest.obtenerLocacionesCercanas(gpsnews,"all");	//GPS + CATEGORIA BUSCADA
+    				//Collection<CategoryPoints> colcatloc=metrequest.obtenerLocacionesCercanas(gpsnews,"all");	//GPS + CATEGORIA BUSCADA
     				
     				/*Intent IntMetodosMap = null;				    				    
 				    try

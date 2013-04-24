@@ -44,6 +44,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Test Location By Dev" />>
+        android:text="Test Location By Dev" />
+        
+       <Button
+        android:id="@+id/bt_test_tiposdisp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Test Tipos Disp" />
 
 </LinearLayout>

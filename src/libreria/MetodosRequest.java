@@ -6,15 +6,18 @@ import org.json.JSONObject;
 
 import libreria.ResponseClass.*;
 
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 
 
 public class MetodosRequest {
 
+	/*
 	String TAG="metodosRequest";
 	RequestTaskAsync objT;
 	boolean TimerState;
@@ -347,9 +350,8 @@ public class MetodosRequest {
     ///######################################### ACTUALIZAR CATEGORIAS DISPONIBLES #################################################################///
 	//
 	//############################################################################################################
-	public ArrayList<Categoria> descargarCategoriasDisponibles(String strversion)
-    {
-    	
+	public Categoria[] descargarCategoriasDisponibles(String strversion)  
+    {    	
     	try
 		{   
 		   		final Gson gson = new Gson();
@@ -362,8 +364,11 @@ public class MetodosRequest {
 		   		Log.i(TAG, "[actualizarCategoriasDisponibles] ENVIAR URL: "+urlCatLoc );		//DEBUG
 		        try
 		        {
-		        	objT = (RequestTaskAsync) new RequestTaskAsync().execute(urlCatLoc);
-		        	
+		        	//objT = (RequestTaskAsync) new RequestTaskAsync().execute(urlCatLoc,Definiciones.Transacciones.actualizacioncategorias);
+		        	Transaction trans=new Transaction();
+		        	trans.setDatain(urlCatLoc);
+		        	trans.setTransaction(Definiciones.Transacciones.actualizacioncategorias);
+		        	objT = (RequestTaskAsync) new RequestTaskAsync().execute(trans);
 		        	
 		        }catch(Exception ex)
 		        {
@@ -372,10 +377,21 @@ public class MetodosRequest {
 		        }	      
 		        	
 		        //////
-		        CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
-		        while((!botermine)&&(objT.getResponse()==null))
-		        {     	;       } 
+		        //botermine=false;
+		        //CountDownTimer objContTime=  this.waitResponse(Definiciones.Definicionesgenerales.tiempoesperaenvio);	//OPTIMIZAR
+		        //while((botermine!=true)&&(objT.getResponse()==null))
+		        //{   Thread.sleep(1500);       } 
 		        //////
+		         
+		        int j=0;
+		        //objT .getStatus() == AsyncTask.Status.FINISHED
+		        //!objT.getStatus().equals(AsyncTask.Status.FINISHED
+		        while((objT.getStatus()!= AsyncTask.Status.FINISHED)&&(j<Definiciones.Definicionesgenerales.tiempoesperaenvio))
+		        {
+		        	Thread.sleep(1000);
+		        	j++;
+		        	Log.i(TAG, "[actualizarCategoriasDisponibles] CONDICION");		//DEBUG
+		        }
 		        
 		        if(objT.getResponse()==null)		      
 		    	 {
@@ -386,30 +402,29 @@ public class MetodosRequest {
 		    		 
 		    	 }else		//////////////OBTUVE RESPUESTA DE ENVIO... CATEGORIAS ...
 		    	 {		
-		    		 objContTime.cancel();
+		    		 //objContTime.cancel();
 		    		 Log.i(TAG, "[actualizarCategoriasDisponibles] RESPONSE : "+objT.getResponse());		//DEBUG
 		    		 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		    		 ///TODO: Corregir
 		    		 //Type collectionType = new TypeToken<Collection<channelSearchEnum>>(){}.getType();
-		    		 JSONObject jsonObject;
-		    		 jsonObject = new JSONObject(objT.getResponse());
+		    		 		    		 
+		    		// String pruebaError="{"+ "\"categories\":[[{"+ "\"id\":\"1\"," + "\"name\":\"resto\"," + "\"description\":\"restourantes\"}],[{" + "\"id\":\"2\"," + "\"name\":\"Hospital\","+ "\"description\":\"Atencion sanitaria y hospitales\"}]]," + "\"code\":\"000\"" + "}";
+		    		 String prueba="{"+ "\"categories\":[{"+ "\"id\":\"1\"," + "\"name\":\"resto\"," + "\"description\":\"restourantes\"},{" + "\"id\":\"2\"," + "\"name\":\"Hospital\","+ "\"description\":\"Atencion sanitaria y hospitales\"}]," + "\"code\":\"000\"" + "}";
+		    		 Log.i(TAG, "[actualizarCategoriasDisponibles] PRUEBA : "+prueba);		//DEBUG
+		    		 Response_actualizarCategoriasDisponibles categoriaslist = gson.fromJson(prueba, Response_actualizarCategoriasDisponibles.class);
+		    		 //Response_actualizarCategoriasDisponibles categoriaslist = gson.fromJson(jsonObject.toString(), Response_actualizarCategoriasDisponibles.class);
+	    			 
 		    		 
-		    		 //Response_actualizarCategoriasDisponibles categoriaslist = gson.fromJson(objT.getResponse(), Response_actualizarCategoriasDisponibles.class);
-		    		 Response_actualizarCategoriasDisponibles categoriaslist = gson.fromJson(jsonObject.toString(), Response_actualizarCategoriasDisponibles.class);
-	    			
 		    		 Log.i(TAG,"[actualizarCategoriasDisponibles] CODIGO RESP: "+categoriaslist.code);
-	    			//if(categoriaslist.getCode()==Definiciones.Definicionesgenerales.SUCCESS)
-		    		 if(true)
+	    			if(categoriaslist.getCode()==Definiciones.Definicionesgenerales.SUCCESS)		    		 
 	    			{
-	    				Log.i(TAG,"[actualizarCategoriasDisponibles] CODIGO SUCCESS");			//
-	    				int x=0;
-	    				
-	    				/*while(x<categoriaslist.categories.length)
+	    				int x=0;	    				
+	    				while(x<categoriaslist.categories.length)
 	    				{
-	    					Log.i(TAG,"[actualizarCategoriasDisponibles] NOMBRECAT: "+categoriaslist.categories[x].name);
+	    					Log.i(TAG,"[actualizarCategoriasDisponibles] NOMBRECAT: "+categoriaslist.categories[x].getName());
 	    					x++;
-	    				}*/
-	    				//return categoriaslist.getCategoryList();
+	    				}
+	    				return categoriaslist.getCategorias();
 	    			}else
 	    			{
 	    				Log.i(TAG,"[actualizarCategoriasDisponibles] NO HAY CATEGORIAS DISPONIBLES");	    				
@@ -500,4 +515,5 @@ public class MetodosRequest {
 		  
 		  return objcount;
 	}
+	*/
 }
