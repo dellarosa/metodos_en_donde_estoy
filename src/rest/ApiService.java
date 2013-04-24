@@ -8,11 +8,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import android.util.Log;
 import bo.LocationPoint;
 import bo.NearLocationPointsResponse;
+import bo.Requestclass;
 import bo.Responseclass;
 
 
@@ -118,6 +121,52 @@ public class ApiService {
 		Responseclass.Response_TiposDisponibles response_TiposDisponibles = responseEntity.getBody();
 		
 		return response_TiposDisponibles;
+	
+	}
+	
+	public boolean postUpdateLocation(double latitude,double longitude,int id) {
+
+		Map<String, String> variables = new HashMap<String, String>();
+			
+		Requestclass rq=new Requestclass();		
+		Requestclass.Request_UpdateLocation uplocation = rq.new Request_UpdateLocation(); 
+		 
+		uplocation.setLatitude(latitude);
+		uplocation.setLongitude(longitude);
+		
+        variables.put("latitude", String.valueOf(latitude));
+        variables.put("longitude", String.valueOf(longitude));
+             
+		HttpHeaders requestHeaders = new HttpHeaders();
+		//requestHeaders.setAccept(Collections.singletonList(new MediaType("application","json")));
+		requestHeaders.setContentType(new MediaType("application","json"));
+		
+		//HttpEntity<?> requestEntity = new HttpEntity<Object>(requestHeaders);
+		HttpEntity<Requestclass.Request_UpdateLocation> requestEntity = new HttpEntity<Requestclass.Request_UpdateLocation>(uplocation, requestHeaders);
+		
+		
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.getMessageConverters().add(new GsonHttpMessageConverter());
+		
+		
+		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<String, Object>();
+		
+		parts.add("latitude", latitude);
+		parts.add("longitude", longitude);
+		
+		//String url = "http://192.168.0.28:3333/api/devices/"+id+"/update_location";
+		String url = "http://192.168.0.28:3333/api/devices/1/update_location";
+		
+		String response = restTemplate.postForObject(url, uplocation, String.class);
+		//String response = restTemplate.postForObject(url, parts, String.class);
+		
+		Log.i("updatelocation","UPDATE RESPONSE:" +response);
+		
+		/*ResponseEntity<Responseclass.Response_TiposDisponibles> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, Responseclass.Response_TiposDisponibles.class, variables);
+		
+		Responseclass.Response_TiposDisponibles response_TiposDisponibles = responseEntity.getBody();
+		*/
+		return true;
 	
 	}
 	

@@ -53,4 +53,6 @@
         android:layout_gravity="center_horizontal"
         android:text="Test Tipos Disp" />
 
+		
+              
 </LinearLayout>

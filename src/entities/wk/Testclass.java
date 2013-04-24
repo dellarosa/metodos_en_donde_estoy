@@ -148,10 +148,18 @@ public class Testclass extends Activity{
 				public void onClick(View v) {
 					try
 					{
-					//	metreq.actualizarPosicion(gps);
+						new Thread()
+						{
+						    public void run() {
+						
+						    	boolean boresp=apiserv.postUpdateLocation(gps.getLatitud(),gps.getLongitud(),1);
+
+						    }
+						}.start();						
+						
 					}catch(RuntimeException e)
 					{
-						Log.i(TAG,"[onClick] Exception update Loc: "+e);
+						Log.i(TAG,"[onClick] Exception Cargar Categ: "+e);
 					}
 				}
 		    });
@@ -248,6 +256,8 @@ public class Testclass extends Activity{
 				}
 		    });
 
+	
+	     
 	     
 	}
 }
