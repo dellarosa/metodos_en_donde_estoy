@@ -2,9 +2,12 @@ package entities.wk;
 
 import java.util.ArrayList;
 
+import edu.palermo.dondeestoy.bo.*;
+import edu.palermo.dondeestoy.bo.Responseclass.Response_GetLocacionDevice;
+import edu.palermo.dondeestoy.rest.ApiService;
 
 
-import rest.ApiService;
+
 
 import libreria.Categoria;
 import libreria.Gps;
@@ -16,8 +19,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import bo.*;
-import bo.Responseclass.Response_GetLocacionDevice;
 
 public class Testclass extends Activity{
 

@@ -1,4 +1,4 @@
-package rest;
+package edu.palermo.dondeestoy.rest;
 
 import java.util.*;
 
@@ -12,11 +12,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import edu.palermo.dondeestoy.bo.LocationPoint;
+import edu.palermo.dondeestoy.bo.NearLocationPointsResponse;
+import edu.palermo.dondeestoy.bo.Requestclass;
+import edu.palermo.dondeestoy.bo.Responseclass;
+
 import android.util.Log;
-import bo.LocationPoint;
-import bo.NearLocationPointsResponse;
-import bo.Requestclass;
-import bo.Responseclass;
 
 
 public class ApiService {

@@ -1,4 +1,4 @@
-package bo;
+package edu.palermo.dondeestoy.bo;
 
 import java.util.ArrayList;
 
