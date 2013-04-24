@@ -11,8 +11,10 @@ public class Responseclass {
 	///############################ ACTUALIZAR POSICION - UPDATE LOCATION ############################################################3
 	public class Response_actualizarPosicion
     {
+		@SerializedName("message")
     	private String message;
-    	private int code;
+		@SerializedName("code")
+    	private String code;
     	
     	public Response_actualizarPosicion()
     	{
@@ -24,7 +26,7 @@ public class Responseclass {
     		return this.message;
     		
     	}
-    	public int getCode()
+    	public String getCode()
     	{
     		return this.code;
     	}
@@ -32,7 +34,7 @@ public class Responseclass {
     	{
     		this.message=msg;
     	}
-    	public void setCode(int code)
+    	public void setCode(String code)
     	{
     		this.code=code;
     	}
@@ -185,7 +187,7 @@ public class Responseclass {
 	
 	
 	
-	///############################ UPDATE YES OR NOT ############################################################3
+	///############################ CREAR NUEVO DEVICE ############################################################3
 	public class Response_crearNuevoDevice
 	{
 
