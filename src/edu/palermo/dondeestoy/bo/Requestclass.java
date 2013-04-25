@@ -30,14 +30,59 @@ public class Requestclass {
 	}
 	
 	///############################ CREAR NUEVO DEVICE ############################################################3
-		public class Request_CrearNuevoDeviceCategory
+		public class Request_CrearNuevoDevice
 	    {
 	    	
-	    	public Request_CrearNuevoDeviceCategory()
+	    	public Request_CrearNuevoDevice()
 	    	{
 	    		
 	    	}
-	    	
+			@SerializedName("name")
+			private String name;
+			
+			@SerializedName("description")
+			private String description;
+			
+			@SerializedName("category_id")
+			private int category_id;
+			
+			@SerializedName("type_id")
+			private int type_id;
+			
+	    	public String getName() {
+				return name;
+			}
+
+			public void setName(String name) {
+				this.name = name;
+			}
+
+			public String getDescription() {
+				return description;
+			}
+
+			public void setDescription(String description) {
+				this.description = description;
+			}
+
+			public int getCategory_id() {
+				return category_id;
+			}
+
+			public void setCategory_id(int category_id) {
+				this.category_id = category_id;
+			}
+
+			public int getType_id() {
+				return type_id;
+			}
+
+			public void setType_id(int type_id) {
+				this.type_id = type_id;
+			}
+
+			
+			
 	    	
 	    }
 		
